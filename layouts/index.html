@@ -8,7 +8,7 @@
 
 {{ define "main" }}
 <main class="content-stream" id="main-content">
-  {{ $allPages := where .Site.RegularPages "Section" "post" }}
+  {{ $allPages := where .Site.RegularPages "Section" "post" | first 100 }}
   {{ $years := slice }}
   {{ range $allPages }}
     {{ $year := .Date.Format "2006" }}
