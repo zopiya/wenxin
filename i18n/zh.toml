@@ -1,3 +1,12 @@
+[home]
+  other = "文辑"
+
+[archive]
+  other = "历往"
+
+[about]
+  other = "知我"
+
 [a11ySkipLink]
   other = "跳转到主要内容"
 

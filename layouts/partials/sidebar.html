@@ -17,7 +17,7 @@
       {{ $isActive = or (eq $current $url) (hasPrefix $current $url) }}
     {{ end }}
     <a href="{{ $url }}"
-       {{- if $isActive }} class="active" aria-current="page"{{ end }}>{{ .Name }}</a>
+       {{- if $isActive }} class="active" aria-current="page"{{ end }}>{{ i18n $identifier | default .Name }}</a>
   {{ end }}
 </nav>
 
