@@ -1,0 +1,31 @@
+@media print {
+  .sidebar { display: none; }
+
+  .page-layout {
+    display: block;
+    padding: 0;
+    max-width: 100%;
+  }
+
+  body {
+    background: white;
+    color: black;
+    font-size: 12pt;
+    line-height: 1.5;
+  }
+
+  a { color: black; text-decoration: underline; }
+  a[href]::after {
+    content: " (" attr(href) ")";
+    font-size: 0.8em;
+    color: #666;
+  }
+
+  .social-icon,
+  .sidebar-footer { display: none; }
+
+  * {
+    animation: none !important;
+    transition: none !important;
+  }
+}

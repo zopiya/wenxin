@@ -1,0 +1,35 @@
+{{ define "title" }}{{ .Title }} - {{ .Site.Title }}{{ end }}
+
+{{ define "sidebar" }}
+  <aside class="sidebar" data-hugo-partial="sidebar">
+    {{ partial "sidebar.html" . }}
+  </aside>
+{{ end }}
+
+{{ define "main" }}
+<main class="archive-wrapper" id="main-content">
+
+  <ul class="taxonomy-cloud">
+    <li><a href="{{ "archive/" | relURL }}" class="taxonomy-tag">{{ i18n "allPosts" }}</a></li>
+    {{ range .Site.Taxonomies.tags.ByCount }}
+      <li><a href="{{ .Page.RelPermalink }}" class="taxonomy-tag{{ if eq $.RelPermalink .Page.RelPermalink }} active{{ end }}">{{ .Page.Title }}</a></li>
+    {{ end }}
+  </ul>
+
+  <hr class="divider">
+
+  <ul class="post-list">
+    {{ range .Paginator.Pages }}
+      <li class="post-item" data-tags="{{ with .Params.tags }}{{ delimit . " " }}{{ end }}">
+        <a href="{{ .RelPermalink }}" class="post-link">
+          <span class="post-title">{{ .Title }}</span>
+          <time class="post-meta" datetime="{{ .Date.Format "2006-01-02" }}">{{ partial "chinese-date.html" (dict "date" .Date "year" true "site" $.Site) }}</time>
+        </a>
+      </li>
+    {{ end }}
+  </ul>
+
+  {{ partial "pagination.html" . }}
+
+</main>
+{{ end }}

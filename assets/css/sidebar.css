@@ -1,0 +1,99 @@
+.sidebar {
+  position: sticky;
+  top: var(--space-32);
+  height: fit-content;
+  min-height: calc(61.8vh - var(--space-32));
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12);
+}
+
+.brand-area .brand-name {
+  font-family: var(--font-display);
+  font-size: 3.5rem;
+  font-weight: 700;
+  color: var(--color-text-heading);
+  letter-spacing: var(--tracking-chinese);
+  line-height: var(--leading-tight);
+  display: flex;
+  align-items: baseline;
+  margin-bottom: var(--space-6);
+}
+
+.brand-mark {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  background-color: var(--color-accent);
+  margin-left: 4px;
+  flex-shrink: 0;
+  animation: pulseBrand 4s ease-in-out infinite;
+}
+
+.bio {
+  font-size: var(--text-base);
+  color: var(--color-text-secondary);
+  line-height: var(--leading-relaxed);
+  white-space: nowrap;
+}
+
+.site-nav {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  font-family: var(--font-ui);
+  font-size: var(--text-sm);
+  letter-spacing: var(--tracking-wide);
+}
+
+.site-nav a {
+  color: var(--color-text-secondary);
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+}
+
+.site-nav a::before {
+  content: "—";
+  margin-right: var(--space-2);
+  color: transparent;
+  transition: color var(--duration-fast);
+}
+
+.site-nav a:hover,
+.site-nav a.active {
+  color: var(--color-text-primary);
+}
+
+.site-nav a.active::before,
+.site-nav a:hover::before {
+  color: var(--color-accent);
+}
+
+.sidebar-footer {
+  margin-top: auto;
+  display: flex;
+  flex-direction: row;
+  gap: var(--space-5);
+  align-items: center;
+  /* Avoid content being obscured by iOS Home Indicator */
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+.social-icon {
+  color: var(--color-text-muted);
+  font-size: var(--icon-md);
+  display: inline-flex;
+  transition: color var(--duration-fast), transform var(--duration-fast);
+}
+
+.social-icon:hover {
+  color: var(--color-text-secondary);
+}
+
+/* Translate effect only on pointer devices — touch has no hover state */
+@media (hover: hover) and (pointer: fine) {
+  .social-icon:hover {
+    transform: translateY(-2px);
+  }
+}

@@ -1,0 +1,14 @@
+{{ define "title" }}{{ i18n "errorTitle" }}{{ end }}
+
+{{ define "sidebar" }}{{ end }}
+
+{{ define "main" }}
+<main class="error-page">
+  <h1 class="error-title">{{ i18n "errorHeading" }}</h1>
+  <p class="error-description">{{ i18n "errorDescription" }}</p>
+  <a href="{{ "/" | relURL }}" class="home-link">
+    <span class="ph ph-arrow-left" aria-hidden="true"></span>
+    <span>{{ i18n "backHome" }}</span>
+  </a>
+</main>
+{{ end }}

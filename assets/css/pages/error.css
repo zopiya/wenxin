@@ -1,0 +1,52 @@
+html, body {
+  height: 100vh;   /* fallback */
+  height: 100dvh;  /* Dynamic viewport: excludes iOS address bar */
+}
+
+.error-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  padding: var(--space-8);
+  text-align: center;
+  animation: fadeUp var(--duration-slow) var(--ease-out) forwards;
+}
+
+.error-title {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 4vw, var(--text-4xl));
+  font-weight: 700;
+  color: var(--color-text-heading);
+  line-height: var(--leading-tight);
+  margin-bottom: var(--space-6);
+  letter-spacing: var(--tracking-tight);
+}
+
+.error-description {
+  font-size: var(--text-base);
+  color: var(--color-text-secondary);
+  line-height: var(--leading-relaxed);
+  margin-bottom: var(--space-10);
+  max-width: 400px;
+}
+
+.home-link {
+  font-family: var(--font-ui);
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+  letter-spacing: var(--tracking-wide);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  transition: color var(--duration-fast) var(--ease-default);
+}
+
+.home-link:hover {
+  color: var(--color-accent);
+}
+
+.home-link .ph {
+  font-size: var(--icon-sm);
+}

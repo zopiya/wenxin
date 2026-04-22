@@ -1,0 +1,77 @@
+[a11ySkipLink]
+  other = "跳转到主要内容"
+
+[a11yMainNav]
+  other = "主导航"
+
+[a11yPostNav]
+  other = "文章前后导航"
+
+[allPosts]
+  other = "全部"
+
+[allTags]
+  other = "所有标签"
+
+[prevPost]
+  other = "前篇"
+
+[nextPost]
+  other = "后篇"
+
+[backHome]
+  other = "返回首页"
+
+[writeLetter]
+  other = "写信"
+
+[subscribeRSS]
+  other = "订阅 RSS"
+
+[archiveTitle]
+  other = "历往"
+
+[errorTitle]
+  other = "404 - 页面未找到"
+
+[errorHeading]
+  other = "此路不通"
+
+[errorDescription]
+  other = "你寻找的页面不存在，或者已经搬去了别处。"
+
+[pullQuoteLabel]
+  other = "核心洞见"
+
+[pullQuoteAria]
+  other = "核心观点"
+
+[pullQuoteDefaultAuthor]
+  other = "仲平的观察"
+
+[readTimeVeryShort]
+  other = "弹指可览"
+
+[readTimeShort]
+  other = "阅需一刻"
+
+[readTimeMedium]
+  other = "半炷香可读"
+
+[readTimeLong]
+  other = "移更漏而尽"
+
+[readTimeVeryLong]
+  other = "烛烬阅毕"
+
+[paginationAria]
+  other = "分页导航"
+
+[paginationPrev]
+  other = "前页"
+
+[paginationNext]
+  other = "后页"
+
+[headingAnchorLabel]
+  other = "永久链接"

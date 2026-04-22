@@ -1,0 +1,77 @@
+[a11ySkipLink]
+  other = "Skip to main content"
+
+[a11yMainNav]
+  other = "Main navigation"
+
+[a11yPostNav]
+  other = "Post navigation"
+
+[allPosts]
+  other = "All"
+
+[allTags]
+  other = "All Tags"
+
+[prevPost]
+  other = "Previous"
+
+[nextPost]
+  other = "Next"
+
+[backHome]
+  other = "Back to Home"
+
+[writeLetter]
+  other = "Email"
+
+[subscribeRSS]
+  other = "Subscribe RSS"
+
+[archiveTitle]
+  other = "Archive"
+
+[errorTitle]
+  other = "404 - Page Not Found"
+
+[errorHeading]
+  other = "Lost in the void"
+
+[errorDescription]
+  other = "The page you're looking for doesn't exist or has been moved."
+
+[pullQuoteLabel]
+  other = "Key Insight"
+
+[pullQuoteAria]
+  other = "Pull quote"
+
+[pullQuoteDefaultAuthor]
+  other = "Author's note"
+
+[readTimeVeryShort]
+  other = "Quick read"
+
+[readTimeShort]
+  other = "~5 min read"
+
+[readTimeMedium]
+  other = "~15 min read"
+
+[readTimeLong]
+  other = "~30 min read"
+
+[readTimeVeryLong]
+  other = "Long read"
+
+[paginationAria]
+  other = "Pagination"
+
+[paginationPrev]
+  other = "Prev"
+
+[paginationNext]
+  other = "Next"
+
+[headingAnchorLabel]
+  other = "permalink"

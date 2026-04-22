@@ -1,0 +1,37 @@
+{{ if gt .Paginator.TotalPages 1 }}
+<nav class="pagination" aria-label="{{ i18n "paginationAria" }}">
+  {{ if .Paginator.HasPrev }}
+    <a href="{{ .Paginator.Prev.URL }}" class="pagination-link pagination-prev" aria-label="{{ i18n "paginationPrev" }}">
+      ← {{ i18n "paginationPrev" }}
+    </a>
+  {{ end }}
+
+  <span class="pagination-pages">
+    {{ $cur := .Paginator.PageNumber }}
+    {{ $total := .Paginator.TotalPages }}
+    {{ $prevShown := 0 }}
+    {{ range .Paginator.Pagers }}
+      {{ $n := .PageNumber }}
+      {{ $inWindow := and (ge $n (sub $cur 2)) (le $n (add $cur 2)) }}
+      {{ $isEdge := or (eq $n 1) (eq $n $total) }}
+      {{ if or $inWindow $isEdge }}
+        {{ if and (gt $prevShown 0) (gt (sub $n $prevShown) 1) }}
+          <span class="pagination-ellipsis" aria-hidden="true">…</span>
+        {{ end }}
+        {{ if eq . $.Paginator }}
+          <span class="pagination-current" aria-current="page">{{ $n }}</span>
+        {{ else }}
+          <a href="{{ .URL }}" class="pagination-number">{{ $n }}</a>
+        {{ end }}
+        {{ $prevShown = $n }}
+      {{ end }}
+    {{ end }}
+  </span>
+
+  {{ if .Paginator.HasNext }}
+    <a href="{{ .Paginator.Next.URL }}" class="pagination-link pagination-next" aria-label="{{ i18n "paginationNext" }}">
+      {{ i18n "paginationNext" }} →
+    </a>
+  {{ end }}
+</nav>
+{{ end }}

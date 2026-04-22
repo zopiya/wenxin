@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="{{ .Site.LanguageCode | default "zh-CN" }}">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="color-scheme" content="light dark">
+  {{ partial "head.html" . }}
+  <title>{{ block "title" . }}{{ .Site.Title }}{{ end }}</title>
+</head>
+<body>
+  <a href="#main-content" class="skip-link">{{ i18n "a11ySkipLink" }}</a>
+
+  <div class="page-layout">
+    {{ block "sidebar" . }}
+      <aside class="sidebar" data-hugo-partial="sidebar">
+        {{ partialCached "sidebar.html" . .RelPermalink }}
+      </aside>
+    {{ end }}
+
+    {{ block "main" . }}{{ end }}
+  </div>
+
+  {{ partial "footer.html" . }}
+</body>
+</html>

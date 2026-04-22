@@ -1,0 +1,111 @@
+{{/* ── Meta & description ── */}}
+<meta name="description" content="{{ with .Description }}{{ . }}{{ else }}{{ with .Params.abstract }}{{ . }}{{ else }}{{ .Site.Params.description | default .Site.Title }}{{ end }}{{ end }}">
+
+{{/* ── Open Graph ── */}}
+<meta property="og:type" content="{{ if .IsPage }}article{{ else }}website{{ end }}">
+<meta property="og:title" content="{{ .Title | default .Site.Title }}">
+<meta property="og:description" content="{{ with .Description }}{{ . }}{{ else }}{{ with .Params.abstract }}{{ . }}{{ else }}{{ .Site.Params.description | default "" }}{{ end }}{{ end }}">
+<meta property="og:site_name" content="{{ .Site.Title }}">
+<meta property="og:url" content="{{ .Permalink }}">
+{{ $ogImage := "" }}
+{{ if .IsPage }}{{ with .Params.image }}{{ $ogImage = . | absURL }}{{ end }}{{ end }}
+{{ if not $ogImage }}{{ with .Site.Params.og_image }}{{ $ogImage = . | absURL }}{{ end }}{{ end }}
+{{ with $ogImage }}<meta property="og:image" content="{{ . }}">{{ end }}
+
+{{/* ── Twitter Card ── */}}
+<meta name="twitter:card" content="{{ if $ogImage }}summary_large_image{{ else }}summary{{ end }}">
+<meta name="twitter:title" content="{{ .Title | default .Site.Title }}">
+<meta name="twitter:description" content="{{ with .Description }}{{ . }}{{ else }}{{ with .Params.abstract }}{{ . }}{{ else }}{{ .Site.Params.description | default "" }}{{ end }}{{ end }}">
+{{ with $ogImage }}<meta name="twitter:image" content="{{ . }}">{{ end }}
+{{ with .Site.Params.twitter_username }}<meta name="twitter:creator" content="@{{ . }}">{{ end }}
+
+{{/* ── Article meta (Open Graph) ── */}}
+{{ if .IsPage }}
+<meta property="article:published_time" content="{{ .Date.Format "2006-01-02T15:04:05Z07:00" }}">
+{{ with .Lastmod }}<meta property="article:modified_time" content="{{ .Format "2006-01-02T15:04:05Z07:00" }}">{{ end }}
+<meta property="article:author" content="{{ .Site.Params.author }}">
+{{ range .Params.tags }}<meta property="article:tag" content="{{ . }}">
+{{ end }}
+{{ end }}
+
+{{/* ── Canonical & feeds ── */}}
+<link rel="canonical" href="{{ .Permalink }}">
+<link rel="alternate" type="application/rss+xml" title="{{ .Site.Title }} RSS" href="{{ "rss.xml" | relURL }}">
+
+{{/* ── Browser compatibility check (inline, no dependency) ── */}}
+{{ with resources.Get "js/browser-check.js" }}
+<script src="{{ .RelPermalink }}"></script>
+{{ end }}
+
+{{/* ── CSS: base bundle (shared across all pages) ── */}}
+{{ $cssModules := slice }}
+{{ range slice "css/fonts.css" "css/variables.css" "css/reset.css" "css/theme.css" "css/layout.css" "css/sidebar.css" "css/animations.css" "css/responsive.css" "css/a11y.css" "css/lenis.css" "css/print.css" }}
+  {{ with resources.Get . }}
+    {{ $cssModules = $cssModules | append . }}
+  {{ end }}
+{{ end }}
+{{ if gt (len $cssModules) 0 }}
+{{ $baseCSS := $cssModules | resources.Concat "css/base.css" | minify | fingerprint }}
+<link rel="stylesheet" href="{{ $baseCSS.RelPermalink }}">
+{{ end }}
+
+{{/* ── CSS: page-specific stylesheet ── */}}
+{{ $pageCSS := resources.Get "css/pages/archive.css" }}
+{{ $pageName := "archive" }}
+{{ if .IsHome }}
+  {{ with resources.Get "css/pages/index.css" }}{{ $pageCSS = . }}{{ end }}
+  {{ $pageName = "index" }}
+{{ else if eq .Layout "about" }}
+  {{ with resources.Get "css/pages/about.css" }}{{ $pageCSS = . }}{{ end }}
+  {{ $pageName = "about" }}
+{{ else if .IsPage }}
+  {{ with resources.Get "css/pages/post.css" }}{{ $pageCSS = . }}{{ end }}
+  {{ $pageName = "post" }}
+{{ end }}
+{{ with $pageCSS }}
+{{ $pageStyle := slice . | resources.Concat (printf "css/page-%s.css" $pageName) | minify | fingerprint }}
+<link rel="stylesheet" href="{{ $pageStyle.RelPermalink }}">
+{{ end }}
+
+{{/* ── Icons ── */}}
+{{ with resources.Get "vendor/phosphor/phosphor.css" }}
+<link rel="stylesheet" href="{{ .RelPermalink }}">
+{{ end }}
+
+{{/* ── JSON-LD Structured Data ── */}}
+{{ if .IsHome }}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Blog",
+  "name": {{ .Site.Title | jsonify }},
+  "description": {{ .Site.Params.description | default "" | jsonify }},
+  "url": {{ .Site.BaseURL | jsonify }},
+  "author": { "@type": "Person", "name": {{ .Site.Params.author | jsonify }} }
+}
+</script>
+{{ else if .IsPage }}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": {{ .Title | jsonify }},
+  "description": {{ with .Description }}{{ . | jsonify }}{{ else }}{{ with .Params.abstract }}{{ . | jsonify }}{{ else }}""{{ end }}{{ end }},
+  "url": {{ .Permalink | jsonify }},
+  "author": { "@type": "Person", "name": {{ .Site.Params.author | jsonify }} },
+  "publisher": { "@type": "Person", "name": {{ .Site.Params.author | jsonify }} },
+  "datePublished": {{ .Date.Format "2006-01-02" | jsonify }},
+  "dateModified": {{ .Lastmod.Format "2006-01-02" | jsonify }}{{ with .Params.tags }},
+  "keywords": {{ delimit . ", " | jsonify }}{{ end }}
+}
+</script>
+{{ end }}
+
+{{/* ── Analytics ── */}}
+{{ with site.Params.analytics.umami }}
+<script defer src="{{ .src }}" data-website-id="{{ .websiteId }}"></script>
+{{ end }}
+{{ with site.Params.analytics.google }}
+<script async src="https://www.googletagmanager.com/gtag/js?id={{ .measurementId }}"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','{{ .measurementId }}');</script>
+{{ end }}

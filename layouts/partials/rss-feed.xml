@@ -1,0 +1,59 @@
+{{- $authorEmail := .Site.Params.email | default "" }}
+{{- $authorName := .Site.Params.author | default "" }}
+
+{{- $pages := .Site.RegularPages }}
+{{- $limit := .Site.Config.Services.RSS.Limit | default 20 }}
+{{- if ge $limit 1 }}
+  {{- $pages = $pages | first $limit }}
+{{- end }}
+
+{{- printf "<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"yes\"?>" | safeHTML }}
+<rss version="2.0"
+  xmlns:atom="http://www.w3.org/2005/Atom"
+  xmlns:content="http://purl.org/rss/1.0/modules/content/"
+  xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <channel>
+    <title>{{ .Site.Title }}</title>
+    <link>{{ .Site.BaseURL }}</link>
+    <description>{{ .Site.Params.description | default "" }}</description>
+    <generator>Hugo</generator>
+    <language>{{ site.Language.LanguageCode }}</language>
+    <ttl>10080</ttl>
+    {{- with $authorEmail }}
+    <managingEditor>{{ . }}{{ with $authorName }} ({{ . }}){{ end }}</managingEditor>
+    {{- end }}
+    {{- with .Site.Copyright }}
+    <copyright>{{ . }}</copyright>
+    {{- end }}
+    <lastBuildDate>{{ now.Format "Mon, 02 Jan 2006 15:04:05 -0700" | safeHTML }}</lastBuildDate>
+    {{- with .OutputFormats.Get "RSS" }}
+    {{ printf "<atom:link href=%q rel=\"self\" type=%q />" .Permalink .MediaType | safeHTML }}
+    {{- end }}
+    {{- range $pages }}
+    <item>
+      <title>{{ .Title | transform.XMLEscape | safeHTML }}</title>
+      <link>{{ .Permalink }}</link>
+      <pubDate>{{ .Date.Format "Mon, 02 Jan 2006 15:04:05 -0700" | safeHTML }}</pubDate>
+      {{- if .Lastmod.After .Date }}
+      <dc:modified>{{ .Lastmod.Format "Mon, 02 Jan 2006 15:04:05 -0700" | safeHTML }}</dc:modified>
+      {{- end }}
+      {{- with $authorEmail }}
+      <author>{{ . }}{{ with $authorName }} ({{ . }}){{ end }}</author>
+      {{- end }}
+      {{- with $authorName }}
+      <dc:creator>{{ . }}</dc:creator>
+      {{- end }}
+      <guid isPermaLink="true">{{ .Permalink }}</guid>
+      {{- with .Params.tags }}
+      {{- range . }}
+      <category>{{ . | transform.XMLEscape | safeHTML }}</category>
+      {{- end }}
+      {{- end }}
+      {{- with .Summary }}
+      <description>{{ . | transform.XMLEscape | safeHTML }}</description>
+      {{- end }}
+      <content:encoded>{{ .Content | transform.XMLEscape | safeHTML }}</content:encoded>
+    </item>
+    {{- end }}
+  </channel>
+</rss>

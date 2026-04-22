@@ -1,0 +1,37 @@
+<header class="brand-area">
+  <h1 class="brand-name"><a href="{{ .Site.Home.RelPermalink }}">{{ .Site.Params.author }}</a><span class="brand-mark" aria-hidden="true"></span></h1>
+  <p class="bio">{{ .Site.Params.bio | safeHTML }}</p>
+</header>
+
+<nav class="site-nav" aria-label="{{ i18n "a11yMainNav" }}">
+  {{ $current := .RelPermalink }}
+  {{ range .Site.Menus.main }}
+    {{ $url := .URL | relURL }}
+    {{ $identifier := .Identifier }}
+    {{ $isActive := false }}
+    {{ if eq $url "/" }}
+      {{ $isActive = eq $current "/" }}
+    {{ else if eq $identifier "archive" }}
+      {{ $isActive = or (eq $current $url) (hasPrefix $current "/tags/") }}
+    {{ else }}
+      {{ $isActive = or (eq $current $url) (hasPrefix $current $url) }}
+    {{ end }}
+    <a href="{{ $url }}"
+       {{- if $isActive }} class="active" aria-current="page"{{ end }}>{{ .Name }}</a>
+  {{ end }}
+</nav>
+
+{{ with .Site.Params.social }}
+<address class="sidebar-footer">
+  {{ range . }}
+  <a href="{{ .url }}" class="social-icon" aria-label="{{ .label }}"
+     {{- with .rel }} rel="{{ . }}"{{ end }}
+     {{- if not (hasPrefix .url "mailto:") }} target="_blank"{{ end }}>
+    <span class="ph {{ .icon }}" aria-hidden="true"></span>
+  </a>
+  {{ end }}
+  <a href="{{ "index.xml" | relURL }}" class="social-icon" aria-label="{{ i18n "subscribeRSS" }}">
+    <span class="ph ph-rss-simple" aria-hidden="true"></span>
+  </a>
+</address>
+{{ end }}

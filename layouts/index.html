@@ -1,0 +1,40 @@
+{{ define "title" }}{{ .Site.Title }}{{ end }}
+
+{{ define "sidebar" }}
+  <aside class="sidebar">
+    {{ partial "sidebar.html" . }}
+  </aside>
+{{ end }}
+
+{{ define "main" }}
+<main class="content-stream" id="main-content">
+  {{ $allPages := where .Site.RegularPages "Section" "post" }}
+  {{ $years := slice }}
+  {{ range $allPages }}
+    {{ $year := .Date.Format "2006" }}
+    {{ if not (in $years $year) }}
+      {{ $years = $years | append $year }}
+    {{ end }}
+  {{ end }}
+
+  {{ range $years }}
+    {{ $year := . }}
+    {{ $yearData := index hugo.Data.chinese_years $year }}
+    {{ $chineseYear := $yearData.short | default $year }}
+
+    <section class="year-group" aria-labelledby="year-{{ $year }}">
+      <h2 class="year-label" id="year-{{ $year }}">{{ $chineseYear }}</h2>
+      <ul class="post-list">
+        {{ range where $allPages "Date.Year" (int $year) }}
+          <li class="post-item">
+            <a href="{{ .RelPermalink }}" class="post-link">
+              <span class="post-title">{{ .Title }}</span>
+              <time class="post-meta" datetime="{{ .Date.Format "2006-01-02" }}">{{ partial "chinese-date.html" (dict "date" .Date "site" $.Site) }}</time>
+            </a>
+          </li>
+        {{ end }}
+      </ul>
+    </section>
+  {{ end }}
+</main>
+{{ end }}

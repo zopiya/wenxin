@@ -1,0 +1,94 @@
+:root {
+  color-scheme: light dark;
+
+  --color-bg-warm:    #F2F0EB;
+  --color-bg-base:    #FAFAF8;
+  --color-bg-pure:    #FFFFFF;
+  --color-bg-subtle:  #F0EDE7;
+
+  --color-text-primary:   #3A3837;
+  --color-text-secondary: #888580;
+  --color-text-muted:     #B0ABA4;
+  --color-text-tertiary:  #C8C3BA;
+  --color-text-heading:   #2C2B29;
+
+  /* Accent used sparingly — max 2 occurrences per page (excluding active icons) */
+  --color-accent:        #8B3525;
+  --color-accent-hover:  #A84030;
+  --color-accent-subtle: #F5E8E5;
+
+  --color-border-subtle: #E5E1DA;
+  --color-border-strong: #C8C3BA;
+
+  --color-link:       #3A3837;
+  --color-link-hover: #8B3525;
+  --color-focus:      rgba(139, 53, 37, 0.4);
+
+  /* Latin fonts self-hosted; CJK falls back to system fonts:
+     iOS/macOS → PingFang/Songti, Windows → Microsoft YaHei/SimSun,
+     Android/Linux → Noto CJK */
+  --font-display: "Lora", "Noto Serif SC", "Source Han Serif SC", "Songti SC",
+    "SimSun", serif;
+  --font-body:    "EB Garamond", "Noto Serif SC", "Source Han Serif SC",
+    "Songti SC", "SimSun", serif;
+  --font-ui:      system-ui, -apple-system, "PingFang SC", "Hiragino Sans GB",
+    "Microsoft YaHei", "Noto Sans SC", sans-serif;
+  --font-mono:    "JetBrains Mono", "Fira Code", "Cascadia Code", ui-monospace,
+    monospace;
+
+  --text-xs:   0.694rem;
+  --text-sm:   0.833rem;
+  --text-base: 1rem;
+  --text-md:   1.0625rem;
+  --text-lg:   1.25rem;
+  --text-xl:   1.5rem;
+  --text-2xl:  1.875rem;
+  --text-3xl:  2.25rem;
+  --text-4xl:  3rem;
+  --text-5xl:  4.5rem;
+
+  --leading-tight:   1.25;
+  --leading-snug:    1.45;
+  --leading-normal:  1.6;
+  --leading-relaxed: 1.85;
+  --leading-loose:   2.0;
+
+  --tracking-tight:   -0.02em;
+  --tracking-normal:   0;
+  --tracking-wide:     0.05em;
+  --tracking-wider:    0.15em;
+  --tracking-chinese:  0.1em;
+
+  --space-1:  4px;  --space-2:  8px;  --space-3:  12px;
+  --space-4:  16px; --space-5:  20px; --space-6:  24px;
+  --space-8:  32px; --space-10: 40px; --space-12: 48px;
+  --space-16: 64px; --space-24: 96px; --space-32: 128px;
+
+  --width-article:  clamp(520px, 55vw, 640px);
+  --width-content:  clamp(620px, 65vw, 760px);
+  --width-showcase: clamp(700px, 72vw, 920px);
+  --padding-page-x: clamp(20px, 5vw, 72px);
+
+  --icon-sm: 16px;
+  --icon-md: 20px;
+  --icon-lg: 24px;
+
+  --duration-instant: 80ms;
+  --duration-fast:   180ms;
+  --duration-base:   260ms;
+  --duration-slow:   420ms;
+  --duration-crawl:  600ms;
+  --ease-default: cubic-bezier(0.25, 0.1, 0.25, 1);
+  --ease-out:     cubic-bezier(0, 0, 0.2, 1);
+  --ease-in:      cubic-bezier(0.4, 0, 1, 1);
+
+  /* Stagger delays at 60ms intervals, covering up to 8 items */
+  --stagger-1: 60ms;
+  --stagger-2: 120ms;
+  --stagger-3: 180ms;
+  --stagger-4: 240ms;
+  --stagger-5: 300ms;
+  --stagger-6: 360ms;
+  --stagger-7: 420ms;
+  --stagger-8: 480ms;
+}
