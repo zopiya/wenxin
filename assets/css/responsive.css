@@ -1,0 +1,191 @@
+/* Breakpoints: >1024px desktop, 861-1024px wide tablet,
+   640-860px narrow tablet, <640px mobile (single-column) */
+
+@media (max-width: 1024px) {
+  :root {
+    --text-5xl: 3.5rem;
+    --text-4xl: 2.5rem;
+  }
+}
+
+@media (max-width: 1024px) and (min-width: 861px) {
+  .page-layout {
+    grid-template-columns: clamp(220px, 24vw, 260px) 1fr;
+    gap: var(--space-16);
+    padding: var(--space-16) clamp(20px, 3.5vw, 48px);
+  }
+  /* Sticky top must match layout padding-top */
+  .sidebar {
+    top: var(--space-16);
+    gap: var(--space-10);
+  }
+  .brand-area .brand-name { font-size: 2.75rem; }
+  .sidebar-footer { display: none; }
+}
+
+@media (max-width: 860px) and (min-width: 640px) {
+  .page-layout {
+    grid-template-columns: clamp(200px, 23vw, 230px) 1fr;
+    gap: var(--space-12);
+    padding: var(--space-12) clamp(16px, 3vw, 36px);
+  }
+  /* Sticky top must match layout padding-top */
+  .sidebar {
+    top: var(--space-12);
+    gap: var(--space-8);
+  }
+  .brand-area .brand-name { font-size: 2.5rem; }
+  /* Narrow sidebar: allow bio text to wrap instead of overflow */
+  .bio { white-space: normal; }
+  .sidebar-footer { display: none; }
+}
+
+@media (max-width: 639px) {
+  .page-layout {
+    grid-template-columns: 1fr;
+    gap: var(--space-6);
+    padding-top: var(--space-6);
+    padding-bottom: var(--space-8);
+  }
+
+  .sidebar {
+    position: static;
+    min-height: 0;
+    border-bottom: 1px solid var(--color-border-subtle);
+    padding-bottom: var(--space-4);
+    gap: var(--space-3);
+  }
+  .brand-area .brand-name {
+    font-size: 1.75rem;
+    margin-bottom: var(--space-2);
+  }
+  .brand-mark { width: 6px; height: 6px; }
+  .bio {
+    white-space: normal;
+    font-size: var(--text-sm);
+    line-height: var(--leading-normal);
+  }
+
+  /* Horizontal nav: active state becomes underline instead of leading dash */
+  .site-nav {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: var(--space-6);
+  }
+  .site-nav a::before { display: none; }
+  .site-nav a {
+    border-bottom: 1px solid transparent;
+    padding-bottom: 1px;
+    transition: border-color var(--duration-fast), color var(--duration-fast);
+  }
+  .site-nav a.active,
+  .site-nav a:hover {
+    border-bottom-color: var(--color-accent);
+  }
+
+  .sidebar-footer { display: none; }
+
+  /* Suppress iOS long-press context menu on links */
+  a { -webkit-touch-callout: none; }
+  /* Prevent accidental text selection on nav/brand during rapid tapping */
+  .site-nav,
+  .brand-area { -webkit-user-select: none; user-select: none; }
+
+  :root {
+    --text-xl:  1.25rem;
+    --text-2xl: 1.5rem;
+    --text-3xl: 1.625rem;
+    --text-4xl: 2rem;
+    --text-5xl: 2.5rem;
+  }
+}
+
+/* WCAG 2.5.5: minimum touch target size 44×44px */
+@media (pointer: coarse) {
+  .site-nav a {
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    padding-block: var(--space-2);
+  }
+
+  .social-icon {
+    min-width: 44px;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .taxonomy-tag {
+    min-height: 44px;
+    padding-block: var(--space-3);
+  }
+
+  .tag {
+    min-height: 36px;
+    padding-block: var(--space-2);
+  }
+
+  .post-nav a {
+    min-height: 44px;
+    display: flex;
+    align-items: flex-start;
+    padding-block: var(--space-2);
+  }
+
+  .contact-link {
+    display: inline-block;
+    padding-block: var(--space-2);
+  }
+
+  .post-link {
+    padding-block: var(--space-2);
+  }
+}
+
+/* Hover effects only on pointer devices — touch devices have no hover state */
+@media (hover: hover) and (pointer: fine) {
+  .social-icon:hover {
+    transform: translateY(-2px);
+  }
+
+  .skill-tag:hover {
+    color: var(--color-accent);
+    border-color: var(--color-accent);
+  }
+
+  .post-item:hover::before {
+    background-color: var(--color-accent);
+  }
+}
+
+/* :active provides immediate visual feedback on touch devices */
+@media (hover: none) {
+  .social-icon:active {
+    color: var(--color-text-secondary);
+    transform: scale(0.9);
+    transition: transform 80ms;
+  }
+
+  .taxonomy-tag:active,
+  .tag:active {
+    color: var(--color-accent);
+    border-color: var(--color-accent);
+    opacity: 0.8;
+  }
+
+  .post-link:active .post-title {
+    color: var(--color-accent);
+  }
+
+  .contact-link:active {
+    color: var(--color-accent);
+    opacity: 0.8;
+  }
+
+  .site-nav a:active {
+    color: var(--color-text-primary);
+    opacity: 0.7;
+  }
+}

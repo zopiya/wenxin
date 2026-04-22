@@ -1,0 +1,71 @@
+{{ define "title" }}{{ .Title }} - {{ .Site.Params.author }}{{ end }}
+
+{{ define "sidebar" }}
+  <aside class="sidebar">
+    <a href="{{ .Site.Home.RelPermalink }}" class="brand-block">
+      <span class="brand-name-vertical">{{ .Site.Params.author }}</span>
+      <span class="brand-mark" aria-hidden="true"></span>
+    </a>
+  </aside>
+{{ end }}
+
+{{ define "main" }}
+<main class="article-wrapper" id="main-content">
+  <article class="article-container">
+
+    <header class="article-header">
+      <h1 class="article-title">{{ .Title }}</h1>
+      <p class="article-meta">
+        {{ with .Date }}
+          <time datetime="{{ . | time.Format "2006-01-02T15:04:05-07:00" }}">{{ partial "chinese-date.html" (dict "date" . "year" true "site" $.Site) }}</time>
+        {{ end }}
+
+        <span>
+          {{ $rt := $.ReadingTime }}
+          {{ if le $rt 5 }}
+            {{ i18n "readTimeVeryShort" }}
+          {{ else if le $rt 15 }}
+            {{ i18n "readTimeShort" }}
+          {{ else if le $rt 30 }}
+            {{ i18n "readTimeMedium" }}
+          {{ else if le $rt 60 }}
+            {{ i18n "readTimeLong" }}
+          {{ else }}
+            {{ i18n "readTimeVeryLong" }}
+          {{ end }}
+        </span>
+      </p>
+    </header>
+
+    <div class="article-content">
+      {{ .Content }}
+    </div>
+
+    <footer class="article-footer">
+      {{ with .Params.tags }}
+      <ul class="tags">
+        {{ range . }}
+          <li><a href="{{ "tags/" | relURL }}{{ . | urlize }}/" class="tag">{{ . }}</a></li>
+        {{ end }}
+      </ul>
+      {{ end }}
+
+      <nav class="post-nav" aria-label="{{ i18n "a11yPostNav" }}">
+        {{ with .Prev }}
+        <p class="post-nav-prev">
+          <small class="post-nav-label">{{ i18n "prevPost" }}</small>
+          <a href="{{ .RelPermalink }}"><strong class="post-nav-title">{{ .Title }}</strong></a>
+        </p>
+        {{ end }}
+        {{ with .Next }}
+        <p class="post-nav-next">
+          <small class="post-nav-label">{{ i18n "nextPost" }}</small>
+          <a href="{{ .RelPermalink }}"><strong class="post-nav-title">{{ .Title }}</strong></a>
+        </p>
+        {{ end }}
+      </nav>
+    </footer>
+
+  </article>
+</main>
+{{ end }}

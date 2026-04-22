@@ -1,0 +1,141 @@
+/* Browser compat banner uses hard-coded values (no CSS custom properties)
+   to remain visible on browsers that don't support them */
+#browser-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 20px;
+  background: #8B3525;
+  color: #fff;
+  font-family: system-ui, -apple-system, sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  position: sticky;
+  top: 0;
+  z-index: 10000;
+}
+
+#browser-banner a {
+  color: #fff;
+  text-underline-offset: 2px;
+}
+
+#browser-banner button {
+  background: none;
+  border: 1px solid rgba(255,255,255,0.6);
+  color: #fff;
+  cursor: pointer;
+  padding: 2px 8px;
+  font-size: 16px;
+  border-radius: 2px;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.page-layout {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: var(--space-32);
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: var(--space-32) clamp(24px, 6vw, 72px);
+  min-height: 100vh;   /* iOS Safari legacy fallback */
+  min-height: 100dvh;  /* Modern: dynamic viewport, excludes address bar */
+  animation: fadeUp var(--duration-slow) var(--ease-out) forwards;
+}
+
+/* Cap width to prevent content from over-stretching on 2K/4K screens */
+body {
+  max-width: 1600px;
+  margin-inline: auto;
+}
+
+.nav-progress {
+  position: fixed;
+  top: 0;
+  top: env(safe-area-inset-top, 0);  /* Notch / Dynamic Island on iOS */
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--color-accent);
+  z-index: 9998;
+  opacity: 0;
+  transition: opacity var(--duration-fast) var(--ease-out);
+  pointer-events: none;
+}
+
+.nav-progress.is-loading {
+  opacity: 1;
+  animation: navProgressAdvance var(--duration-slow) var(--ease-out) forwards;
+}
+
+.nav-progress.is-complete {
+  width: 100% !important;
+  animation: none;
+  opacity: 0;
+  transition: width 100ms var(--ease-out), opacity 300ms var(--ease-out) 100ms;
+}
+
+@keyframes navProgressAdvance {
+  from { width: 0; }
+  to   { width: 85%; }
+}
+
+.pjax-toast {
+  position: fixed;
+  bottom: max(var(--space-6), calc(env(safe-area-inset-bottom, 0px) + var(--space-4)));
+  right: max(var(--space-6), calc(env(safe-area-inset-right, 0px) + var(--space-4)));
+  background: var(--color-accent);
+  color: #fff;
+  padding: var(--space-3) var(--space-5);
+  border-radius: 2px;
+  font-family: var(--font-ui);
+  font-size: var(--text-sm);
+  z-index: 9999;
+  opacity: 0;
+  transition: opacity var(--duration-base) var(--ease-out);
+  pointer-events: none;
+}
+
+.pjax-toast.is-visible { opacity: 1; }
+
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: auto;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  z-index: 1000;
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-bg-pure);
+  color: var(--color-text-primary);
+  font-family: var(--font-ui);
+  font-size: var(--text-sm);
+  text-decoration: none;
+  border: 1px solid var(--color-border-strong);
+}
+
+.skip-link:focus {
+  position: fixed;
+  top: var(--space-4);
+  left: var(--space-4);
+  width: auto;
+  height: auto;
+  overflow: visible;
+}
+
+.site-footer {
+  text-align: center;
+  padding: var(--space-24) var(--space-4) var(--space-8);
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.site-footer-text {
+  font-family: var(--font-ui);
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  letter-spacing: var(--tracking-wide);
+}

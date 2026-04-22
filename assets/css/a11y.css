@@ -1,0 +1,52 @@
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+@media (forced-colors: active) {
+  :focus-visible {
+    outline: 3px solid ButtonText;
+    outline-offset: 2px;
+  }
+
+  a {
+    color: LinkText;
+  }
+
+  a:visited {
+    color: VisitedText;
+  }
+
+  .skip-link:focus {
+    background: Canvas;
+    color: CanvasText;
+    border: 2px solid ButtonText;
+  }
+}
+
+@media (prefers-contrast: more) {
+  :root {
+    --color-text: #1a1816;
+    --color-text-muted: #3a3837;
+    --color-border: #3a3837;
+    --color-border-subtle: #5a5855;
+  }
+
+  :focus-visible {
+    outline-width: 3px;
+  }
+}
+
+@media (prefers-contrast: more) and (prefers-color-scheme: dark) {
+  :root {
+    --color-text: #f5f3ee;
+    --color-text-muted: #d5d3ce;
+    --color-border: #c5c3be;
+    --color-border-subtle: #a5a3a0;
+  }
+}

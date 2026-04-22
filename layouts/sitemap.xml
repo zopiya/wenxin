@@ -1,0 +1,30 @@
+{{ printf "<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"yes\"?>" | safeHTML }}
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  {{/* 首页 */}}
+  <url>
+    <loc>{{ .Site.Home.Permalink }}</loc>
+    <lastmod>{{ now.Format "2006-01-02T15:04:05-07:00" }}</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+
+  {{/* 所有页面（文章、关于、归档、标签页等） */}}
+  {{ range .Site.Pages }}
+  {{ if and (not .IsHome) (not .Draft) }}
+  <url>
+    <loc>{{ .Permalink }}</loc>
+    <lastmod>{{ .Lastmod.Format "2006-01-02T15:04:05-07:00" | safeHTML }}</lastmod>
+    {{ if eq .Section "post" }}
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    {{ else if .IsPage }}
+    <changefreq>yearly</changefreq>
+    <priority>0.6</priority>
+    {{ else }}
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+    {{ end }}
+  </url>
+  {{ end }}
+  {{ end }}
+</urlset>

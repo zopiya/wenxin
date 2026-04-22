@@ -1,0 +1,17 @@
+{{ define "title" }}{{ i18n "allTags" }} - {{ .Site.Title }}{{ end }}
+
+{{ define "sidebar" }}
+  <aside class="sidebar" data-hugo-partial="sidebar">
+    {{ partial "sidebar.html" . }}
+  </aside>
+{{ end }}
+
+{{ define "main" }}
+<main class="archive-wrapper" id="main-content">
+  <ul class="taxonomy-cloud">
+    {{ range .Data.Terms.ByCount }}
+      <li><a href="{{ .Page.RelPermalink }}" class="taxonomy-tag">{{ .Page.Title }} ({{ .Count }})</a></li>
+    {{ end }}
+  </ul>
+</main>
+{{ end }}

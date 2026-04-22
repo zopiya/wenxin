@@ -1,0 +1,7 @@
+<aside class="pull-quote" aria-label="{{ i18n "pullQuoteAria" }}">
+  <strong class="pull-quote-label">{{ i18n "pullQuoteLabel" }}</strong>
+  <p class="pull-quote-text">{{ .Inner | markdownify }}</p>
+  <footer class="pull-quote-attribution">
+    <span class="pull-quote-author">{{ .Get "author" | default (i18n "pullQuoteDefaultAuthor") }}</span>
+  </footer>
+</aside>

@@ -1,0 +1,103 @@
+baseURL = "https://example.com/"
+languageCode = "zh-CN"
+title = "文心"
+theme = "wenxin"
+defaultContentLanguage = "zh"
+hasCJKLanguage = true
+enableRobotsTXT = true
+
+[params]
+  author = "你的名字"
+  bio = "你的个人简介"
+  description = "你的博客描述"
+  readTime = true
+
+  # OG 图片（用于社交分享，推荐 1200×630px）
+  # og_image = "/images/og.jpg"
+
+  # Twitter 用户名（不含 @，用于 twitter:creator）
+  # twitter_username = "yourname"
+
+  # 社交链接 — 每条记录包含：
+  #   icon  = Phosphor 图标类名（https://phosphoricons.com）
+  #   url   = 完整链接
+  #   label = aria-label（屏幕阅读器用）
+  #   rel   = 可选，链接 rel 属性
+  [[params.social]]
+    icon  = "ph-github-logo"
+    url   = "https://github.com/yourname"
+    label = "GitHub"
+    rel   = "noopener noreferrer"
+  [[params.social]]
+    icon  = "ph-envelope-simple"
+    url   = "mailto:your@email.com"
+    label = "发送邮件"
+
+  # 统计分析（取消注释并填写以启用）
+  # [params.analytics.umami]
+  #   websiteId = "your-umami-website-id"
+  #   src = "https://your-umami-instance/script.js"
+  #
+  # [params.analytics.google]
+  #   measurementId = "G-XXXXXXXXXX"
+
+[menu]
+  [[menu.main]]
+    identifier = "home"
+    name = "文辑"
+    url = "/"
+    weight = 1
+  [[menu.main]]
+    identifier = "archive"
+    name = "历往"
+    url = "/archive/"
+    weight = 2
+  [[menu.main]]
+    identifier = "about"
+    name = "知我"
+    url = "/about/"
+    weight = 3
+
+[taxonomies]
+  tag = "tags"
+
+[outputFormats]
+  [outputFormats.RSS]
+    mediaType = "application/rss+xml"
+    baseName = "rss"
+    noUgly = true
+  [outputFormats.RSSIndex]
+    mediaType = "application/rss+xml"
+    baseName = "index"
+    noUgly = true
+  [outputFormats.Feed]
+    mediaType = "application/rss+xml"
+    baseName = "feed"
+    noUgly = true
+
+[outputs]
+  home = ["HTML", "RSS", "RSSIndex", "Feed"]
+  section = ["HTML"]
+
+[markup]
+  [markup.goldmark]
+    [markup.goldmark.renderer]
+      unsafe = true
+  [markup.highlight]
+    style = "monokai"
+    lineNos = false
+
+[pagination]
+  pagerSize = 8
+
+[permalinks]
+  [permalinks.page]
+    post = "/:slug"
+
+[frontmatter]
+  date = ["created", "date"]
+  lastmod = ["updated", "lastmod", "date"]
+
+[services]
+  [services.rss]
+    limit = 10

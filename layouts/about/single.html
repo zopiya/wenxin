@@ -1,0 +1,20 @@
+{{ define "title" }}{{ .Title }} | {{ .Site.Params.author | default "仲平" }}{{ end }}
+
+{{ define "sidebar" }}
+  <aside class="sidebar" data-hugo-partial="sidebar">
+    {{ partial "sidebar.html" . }}
+  </aside>
+{{ end }}
+
+{{ define "main" }}
+<main class="about-wrapper" id="main-content">
+
+  <section class="hero-section">
+    <h1 class="hero-title">{{ .Title }}</h1>
+    <section class="narrative-text">
+      {{ .Content }}
+    </section>
+  </section>
+
+</main>
+{{ end }}

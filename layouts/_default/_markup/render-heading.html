@@ -1,0 +1,6 @@
+<h{{ .Level }} id="{{ .Anchor }}"{{ with .Attributes }}{{ range $k, $v := . }} {{ $k }}="{{ $v }}"{{ end }}{{ end }}>
+  {{- .Text | safeHTML -}}
+  {{- if ge .Level 2 }}{{- if le .Level 4 }}
+  <a class="heading-anchor" href="#{{ .Anchor }}" aria-label="{{ .Text | plainify }} {{ i18n "headingAnchorLabel" | default "permalink" }}">#</a>
+  {{- end }}{{- end }}
+</h{{ .Level }}>

@@ -1,0 +1,41 @@
+{{ define "title" }}{{ i18n "archiveTitle" }} - {{ .Site.Params.author }}{{ end }}
+
+{{ define "sidebar" }}
+  <aside class="sidebar">
+    {{ partial "sidebar.html" . }}
+  </aside>
+{{ end }}
+
+{{ define "main" }}
+<main class="archive-wrapper" id="main-content">
+
+  {{ if .Site.Taxonomies.tags }}
+  <ul class="taxonomy-cloud">
+    <li><a href="{{ "archive/" | relURL }}" class="taxonomy-tag active">{{ i18n "allPosts" }}</a></li>
+    {{ range .Site.Taxonomies.tags.ByCount }}
+      <li><a href="{{ .Page.RelPermalink }}" class="taxonomy-tag">{{ .Page.Title }}</a></li>
+    {{ end }}
+  </ul>
+  {{ end }}
+
+  <hr class="divider">
+
+  {{/* 使用站点全部文章分页，而非当前 section 的子页面 */}}
+  {{ $allPosts := where .Site.RegularPages "Section" "post" }}
+  {{ $paginator := .Paginate $allPosts }}
+
+  <ul class="post-list">
+    {{ range $paginator.Pages }}
+      <li class="post-item" data-tags="{{ with .Params.tags }}{{ delimit . " " }}{{ end }}">
+        <a href="{{ .RelPermalink }}" class="post-link">
+          <span class="post-title">{{ .Title }}</span>
+          <time class="post-meta" datetime="{{ .Date.Format "2006-01-02" }}">{{ partial "chinese-date.html" (dict "date" .Date "year" true "site" $.Site) }}</time>
+        </a>
+      </li>
+    {{ end }}
+  </ul>
+
+  {{ partial "pagination.html" . }}
+
+</main>
+{{ end }}
