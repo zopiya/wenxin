@@ -1,69 +1,67 @@
-{{/* 中文农历日期格式化
+{{- /* 中文农历日期格式化
      用法：
        仅月日：{{ partial "chinese-date.html" .Date }}
        含年份：{{ partial "chinese-date.html" (dict "date" .Date "year" true) }}
      输出：
        仅月日：正月初一
        含年份：乙巳年正月初一
-*/}}
+*/ -}}
+{{- $date := . -}}
+{{- $showYear := false -}}
 
-{{ $date := . }}
-{{ $showYear := false }}
+{{- if reflect.IsMap . -}}
+  {{- $date = .date -}}
+  {{- $showYear = .year | default false -}}
+{{- end -}}
 
-{{ if reflect.IsMap . }}
-  {{ $date = .date }}
-  {{ $showYear = .year | default false }}
-{{ end }}
+{{- $dateStr := $date.Format "20060102" -}}
+{{- $entry := index hugo.Data.chinese_date.calendar $dateStr -}}
 
-{{ $dateStr := $date.Format "20060102" }}
-{{ $entry := index hugo.Data.chinese_date.calendar $dateStr }}
+{{- $result := "" -}}
 
-{{ $result := "" }}
+{{- if $entry -}}
+  {{- $lunarYear := int (index $entry 0) -}}
+  {{- $monthIdx := int (index $entry 1) -}}
+  {{- $dayIdx := int (index $entry 2) -}}
+  {{- $isLeap := int (index $entry 3) -}}
 
-{{ if $entry }}
-  {{ $lunarYear := int (index $entry 0) }}
-  {{ $monthIdx := int (index $entry 1) }}
-  {{ $dayIdx := int (index $entry 2) }}
-  {{ $isLeap := int (index $entry 3) }}
+  {{- $monthName := "" -}}
+  {{- if eq $isLeap 1 -}}
+    {{- $monthName = index hugo.Data.chinese_date.leap_months $monthIdx -}}
+  {{- else -}}
+    {{- $monthName = index hugo.Data.chinese_date.months $monthIdx -}}
+  {{- end -}}
 
-  {{ $monthName := "" }}
-  {{ if eq $isLeap 1 }}
-    {{ $monthName = index hugo.Data.chinese_date.leap_months $monthIdx }}
-  {{ else }}
-    {{ $monthName = index hugo.Data.chinese_date.months $monthIdx }}
-  {{ end }}
+  {{- $dayName := index hugo.Data.chinese_date.days $dayIdx -}}
 
-  {{ $dayName := index hugo.Data.chinese_date.days $dayIdx }}
+  {{- if $showYear -}}
+    {{- $yearName := index hugo.Data.chinese_date.years (printf "%d" $lunarYear) -}}
+    {{- $result = printf "%s%s%s" $yearName $monthName $dayName -}}
+  {{- else -}}
+    {{- $result = printf "%s%s" $monthName $dayName -}}
+  {{- end -}}
+{{- else -}}
+  {{- $monthNames := slice "一" "二" "三" "四" "五" "六" "七" "八" "九" "十" "十一" "十二" -}}
+  {{- $monthPart := printf "%s月" (index $monthNames (sub (int $date.Month) 1)) -}}
+  {{- $day := $date.Day -}}
+  {{- $digits := slice "零" "一" "二" "三" "四" "五" "六" "七" "八" "九" "十" -}}
+  {{- $dayPart := "" -}}
+  {{- if le $day 10 -}}
+    {{- $dayPart = printf "初%s日" (index $digits $day) -}}
+  {{- else if le $day 20 -}}
+    {{- if eq $day 20 -}}
+      {{- $dayPart = "二十日" -}}
+    {{- else -}}
+      {{- $dayPart = printf "十%s日" (index $digits (sub $day 10)) -}}
+    {{- end -}}
+  {{- else if lt $day 30 -}}
+    {{- $dayPart = printf "廿%s日" (index $digits (sub $day 20)) -}}
+  {{- else if eq $day 30 -}}
+    {{- $dayPart = "三十日" -}}
+  {{- else -}}
+    {{- $dayPart = "三十一日" -}}
+  {{- end -}}
+  {{- $result = printf "%s%s" $monthPart $dayPart -}}
+{{- end -}}
 
-  {{ if $showYear }}
-    {{ $yearName := index hugo.Data.chinese_date.years (printf "%d" $lunarYear) }}
-    {{ $result = printf "%s%s%s" $yearName $monthName $dayName }}
-  {{ else }}
-    {{ $result = printf "%s%s" $monthName $dayName }}
-  {{ end }}
-{{ else }}
-  {{/* 回退：日期不在映射范围内，使用公历中文表示 */}}
-  {{ $monthNames := slice "一" "二" "三" "四" "五" "六" "七" "八" "九" "十" "十一" "十二" }}
-  {{ $monthPart := printf "%s月" (index $monthNames (sub (int $date.Month) 1)) }}
-  {{ $day := $date.Day }}
-  {{ $digits := slice "零" "一" "二" "三" "四" "五" "六" "七" "八" "九" "十" }}
-  {{ $dayPart := "" }}
-  {{ if le $day 10 }}
-    {{ $dayPart = printf "初%s日" (index $digits $day) }}
-  {{ else if le $day 20 }}
-    {{ if eq $day 20 }}
-      {{ $dayPart = "二十日" }}
-    {{ else }}
-      {{ $dayPart = printf "十%s日" (index $digits (sub $day 10)) }}
-    {{ end }}
-  {{ else if lt $day 30 }}
-    {{ $dayPart = printf "廿%s日" (index $digits (sub $day 20)) }}
-  {{ else if eq $day 30 }}
-    {{ $dayPart = "三十日" }}
-  {{ else }}
-    {{ $dayPart = "三十一日" }}
-  {{ end }}
-  {{ $result = printf "%s%s" $monthPart $dayPart }}
-{{ end }}
-
-{{ $result }}
+{{- $result -}}

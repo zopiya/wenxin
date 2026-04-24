@@ -5,7 +5,7 @@ description = "Minimalist Chinese-first Hugo blog theme focused on reading exper
 homepage    = "https://github.com/zopiya/wenxin-hugo-theme"
 tags        = ["blog", "minimalist", "chinese", "typography", "dark-mode", "responsive", "accessible", "i18n"]
 features    = ["blog", "dark-mode", "i18n", "responsive", "syntax-highlighting", "accessibility", "smooth-scrolling"]
-min_version = "0.110.0"
+min_version = "0.128.0"
 
 [author]
   name     = "Zopiya"
