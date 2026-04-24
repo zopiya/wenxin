@@ -9,6 +9,20 @@
   var MAX_CACHE_SIZE = 20;
   var navVersion = 0;
 
+  function trackPageview(url) {
+    // Google Analytics — gtag queue is available immediately
+    if (typeof window.gtag === 'function' && window.gaMeasurementId) {
+      window.gtag('config', window.gaMeasurementId, {
+        page_path: url,
+        page_title: document.title
+      });
+    }
+    // Umami — available after its script loads
+    if (window.umami && typeof window.umami.track === 'function') {
+      window.umami.track({ url: url, title: document.title });
+    }
+  }
+
   var progressBar = document.createElement('div');
   progressBar.className = 'nav-progress';
   progressBar.setAttribute('aria-hidden', 'true');
@@ -141,6 +155,9 @@
         progressDone();
       });
     });
+
+    // Notify analytics of SPA navigation
+    trackPageview(url);
 
     // Delay Lenis reinit until fade-in animation completes
     setTimeout(function () {

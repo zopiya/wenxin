@@ -1,5 +1,3 @@
-/* Post page uses base background instead of warm for better reading contrast */
-body { background-color: var(--color-bg-base); }
 
 .page-layout {
   grid-template-columns: 100px var(--width-article);

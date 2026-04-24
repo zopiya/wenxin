@@ -19,8 +19,7 @@
 
   {{ range $years }}
     {{ $year := . }}
-    {{ $yearData := index hugo.Data.chinese_years $year }}
-    {{ $chineseYear := $yearData.gz | strings.TrimSuffix "年" | default $year }}
+    {{ $chineseYear := index hugo.Data.chinese_date.years $year | strings.TrimSuffix "年" | default $year }}
 
     <section class="year-group" aria-labelledby="year-{{ $year }}">
       <h2 class="year-label" id="year-{{ $year }}">{{ $chineseYear }}</h2>

@@ -1,3 +1,5 @@
+/* Prevent Chrome from fighting Lenis with its own smooth scroll */
+html { scroll-behavior: auto !important; }
 html.lenis { height: auto; }
 .lenis.lenis-smooth { scroll-behavior: auto; }
 .lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }

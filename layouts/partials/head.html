@@ -109,10 +109,64 @@
 {{ end }}
 
 {{/* ── Analytics ── */}}
+{{/* ── Analytics Resource Hints ── */}}
 {{ with site.Params.analytics.umami }}
-<script defer src="{{ .src }}" data-website-id="{{ .websiteId }}"></script>
+<link rel="preconnect" href="{{ .src | replaceRE "^(https?://[^/]+).*" "$1" }}" crossorigin>
 {{ end }}
 {{ with site.Params.analytics.google }}
-<script async src="https://www.googletagmanager.com/gtag/js?id={{ .measurementId }}"></script>
-<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','{{ .measurementId }}');</script>
+<link rel="preconnect" href="https://www.googletagmanager.com" crossorigin>
+<link rel="dns-prefetch" href="https://www.google-analytics.com">
+{{ end }}
+
+{{ with site.Params.analytics.umami }}
+<script>
+  (function() {
+    var src = '{{ .src }}';
+    var websiteId = '{{ .websiteId }}';
+    function load() {
+      var s = document.createElement('script');
+      s.src = src;
+      s.dataset.websiteId = websiteId;
+      s.async = true;
+      s.fetchPriority = 'low';
+      document.head.appendChild(s);
+    }
+    if ('requestIdleCallback' in window) {
+      requestIdleCallback(load, { timeout: 5000 });
+    } else if ('requestAnimationFrame' in window) {
+      requestAnimationFrame(function() { setTimeout(load, 1); });
+    } else {
+      setTimeout(load, 2000);
+    }
+  })();
+</script>
+{{ end }}
+{{ with site.Params.analytics.google }}
+<script>
+  (function() {
+    var measurementId = '{{ .measurementId }}';
+    // Initialize dataLayer and gtag queue immediately so commands are never lost
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){ dataLayer.push(arguments); }
+    window.gtag = gtag;
+    window.gaMeasurementId = measurementId;
+    gtag('js', new Date());
+    gtag('config', measurementId);
+    // Defer only the heavy script download
+    function loadScript() {
+      var s = document.createElement('script');
+      s.src = 'https://www.googletagmanager.com/gtag/js?id=' + measurementId;
+      s.async = true;
+      s.fetchPriority = 'low';
+      document.head.appendChild(s);
+    }
+    if ('requestIdleCallback' in window) {
+      requestIdleCallback(loadScript, { timeout: 5000 });
+    } else if ('requestAnimationFrame' in window) {
+      requestAnimationFrame(function() { setTimeout(loadScript, 1); });
+    } else {
+      setTimeout(loadScript, 2000);
+    }
+  })();
+</script>
 {{ end }}

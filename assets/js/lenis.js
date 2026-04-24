@@ -11,7 +11,7 @@
     var lenis = new Lenis({
       duration: 1.25,
       easing: function (t) { return Math.min(1, 1.001 - Math.pow(2, -10 * t)); },
-      mouseMultiplier: 0.85,
+      wheelMultiplier: 0.85,
       smoothWheel: true,
       smoothTouch: false,
       touchMultiplier: 0
