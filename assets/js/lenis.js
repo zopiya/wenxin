@@ -121,6 +121,7 @@
       window._lenisCleanup();
       window._lenisCleanup = null;
     }
+    if (typeof Lenis === 'undefined') return;
     initLenis();
     initSidebarScrollEffect();
   };

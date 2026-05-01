@@ -44,6 +44,10 @@
     {{ $cssModules = $cssModules | append . }}
   {{ end }}
 {{ end }}
+{{/* ── Custom stylesheet (optional override) ── */}}
+{{ with resources.Get "css/custom.css" }}
+  {{ $cssModules = $cssModules | append . }}
+{{ end }}
 {{ if gt (len $cssModules) 0 }}
 {{ $baseCSS := $cssModules | resources.Concat "css/base.css" | minify | fingerprint }}
 <link rel="stylesheet" href="{{ $baseCSS.RelPermalink }}">
@@ -135,7 +139,8 @@
 {{/* ── Analytics ── */}}
 {{/* ── Analytics Resource Hints ── */}}
 {{ with site.Params.analytics.umami }}
-<link rel="preconnect" href="{{ .src | replaceRE "^(https?://[^/]+).*" "$1" }}" crossorigin>
+{{- $host := .src | replaceRE "^https?://([^/]+)/.*" "$1" -}}
+<link rel="preconnect" href="https://{{ $host }}" crossorigin>
 {{ end }}
 {{ with site.Params.analytics.google }}
 <link rel="preconnect" href="https://www.googletagmanager.com" crossorigin>

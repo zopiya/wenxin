@@ -120,6 +120,11 @@
       currentSidebar.replaceWith(nextSidebar.cloneNode(true));
     }
 
+    if (typeof window._sidebarScrollCleanup === 'function') {
+      window._sidebarScrollCleanup();
+      window._sidebarScrollCleanup = null;
+    }
+
     var targetPath = new URL(url, location.origin).pathname;
     document.querySelectorAll('.site-nav a').forEach(function (a) {
       var aPath = new URL(a.href, location.origin).pathname;

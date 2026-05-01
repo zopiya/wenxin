@@ -13,3 +13,8 @@
 {{ with resources.Get "js/pjax.js" }}
 <script src="{{ .RelPermalink }}"></script>
 {{ end }}
+
+{{/* ── Custom JavaScript (optional) ── */}}
+{{ with resources.Get "js/custom.js" }}
+<script src="{{ .RelPermalink }}" defer></script>
+{{ end }}

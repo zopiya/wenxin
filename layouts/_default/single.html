@@ -17,7 +17,7 @@
       <h1 class="article-title">{{ .Title }}</h1>
       <p class="article-meta">
         {{ with .Date }}
-          <time datetime="{{ . | time.Format "2006-01-02T15:04:05-07:00" }}">{{ partial "chinese-date.html" (dict "date" . "year" true "site" $.Site) }}</time>
+          <time datetime="{{ .Format "2006-01-02T15:04:05-07:00" }}">{{ partial "chinese-date.html" (dict "date" . "year" true "site" $.Site) }}</time>
         {{ end }}
 
         <span>
