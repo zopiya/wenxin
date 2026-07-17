@@ -154,24 +154,11 @@
   text-align: start;
 }
 
-/* ── Two-tier emphasis system ──────────────────────────────────────────
- *
- * font-weight: inherit keeps <strong> from spiking to a heavier CJK
- * faux-bold weight — a style choice for a uniform body gray, not a
- * font-weight workaround. In its place, a thin underline in the site's
- * accent red marks emphasis: it reads instantly while scanning without
- * making anything heavier or louder than the paragraph around it.
- *
- * That accent red is a scarce resource — it marks the one or two things
- * on a page that actually need a hard visual stop (<strong> here,
- * blockquote's left rule below). Every other inline mark below (em, u,
- * del, mark) stays a second tier: distinct through line *shape*, not
- * color. None of them touch --color-accent.
- *
- * :not(.pull-quote-label) excludes the pullquote shortcode's <strong> —
- * that one is a UI label (uppercase, letter-spaced, muted gray), not
- * prose emphasis, and shouldn't pick up the underline treatment.
- * ────────────────────────────────────────────── */
+/* font-weight: inherit keeps CJK <strong> from faux-bolding; the
+ * underline carries the emphasis instead, in the accent red reserved for
+ * this and blockquote's rule — em/u/del/mark stay monochrome, told apart
+ * by line shape instead. :not(.pull-quote-label) excludes the pullquote
+ * shortcode's own <strong> label (uppercase, muted gray, styled below). */
 .article-content strong:not(.pull-quote-label) {
   font-weight: inherit;
   color: inherit;
@@ -218,27 +205,11 @@
 }
 .article-content li { margin-bottom: var(--space-2); }
 
-/* ── Lists: the brand-mark square instead of a generic disc ──────────────
- *
- * .brand-mark (sidebar.css) is the small solid accent square next to the
- * author's name — already the site's own bullet-shaped signature. Reusing
- * it for <ul> ties list markers back to that mark instead of leaning on
- * the browser's default disc. Nested <ul> switches to a hollow (border-
- * only) square in muted gray rather than repeating the solid red one
- * level down — same "red is scarce" logic as the emphasis system above:
- * one solid red mark per list is a signature, three nested ones is noise.
- *
- * <ol> gets counters set in the mono/tabular-nums family already used for
- * dates and meta (.article-meta above), formatted as a zero-padded "01."
- * instead of the browser's plain "1." — reads as a designed numbering
- * system rather than default UA styling. Nested <ol> drops to lower-alpha
- * in the same muted tone the nested square uses, for the same reason.
- *
- * Known limitation: counter-reset doesn't pick up a Markdown list's
- * `start` value (e.g. "5. foo"), so a list deliberately started at a
- * non-1 number will still render as "01." — rare enough in practice not
- * to be worth the counter(attr()) workaround, which has patchy support.
- * ────────────────────────────────────────────── */
+/* ul reuses .brand-mark's accent square (sidebar.css) instead of a browser
+ * disc; nested ul drops to a hollow gray square. ol counters use the mono/
+ * tabular-nums family from .article-meta, zero-padded ("01."); nested ol
+ * drops to lower-alpha. Doesn't honor a list's `start` value — an accepted
+ * gap, not worth counter(attr())'s patchy browser support. */
 .article-content ul {
   list-style: none;
   padding-left: 0;
@@ -323,27 +294,10 @@
   line-height: var(--leading-normal);
 }
 
-/* ── Code blocks: Chroma tokens in the site's own ink ─────────────────────
- *
- * Requires markup.highlight.noClasses = false in hugo.toml — Chroma then
- * emits token classes (.kn, .s2, .c1, ...) instead of baking color and
- * background into inline styles on every <pre>/<span>. Inline styles
- * would otherwise force whatever markup.highlight.style is configured
- * (e.g. "monokai": #272822 background, neon pink/green/cyan tokens) onto
- * every code block regardless of the site's light/dark mode — a stark
- * dark box in light mode, still a color clash against this palette in
- * dark mode. It happens on any post with a code fence, labeled or not: a
- * plain ``` block still runs through Chroma's plaintext lexer and gets
- * the same forced-color box.
- *
- * With noClasses off, the .article-content pre background above
- * (--color-bg-subtle, already correct for both modes) shows through
- * untouched, and token colors below are built only from colors already
- * in the palette. No new rainbow: keywords are told apart by weight, not
- * a new hue, and --color-accent stays out of it entirely except for
- * genuine lexer errors — same "shape over color, red stays rare" logic
- * as the emphasis system above.
- * ────────────────────────────────────────────── */
+/* Requires markup.highlight.noClasses = false in hugo.toml, so Chroma emits
+ * token classes instead of baking a fixed color scheme into inline styles
+ * (which ignored light/dark mode entirely). Recolored from the existing
+ * palette; weight distinguishes keywords rather than a new hue. */
 .article-content .chroma {
   color: var(--color-text-primary);
 }
@@ -615,11 +569,8 @@
   .article-content a[href]::after { content: " (" attr(href) ")"; font-size: 0.8em; color: #666; }
 }
 
-/* font-style: italic is wrong for CJK regardless of the tier system
- * above — there's no italic cut for Songti/Noto Serif SC, so *斜体* on
- * CJK text renders as a browser-faked oblique skew. A wavy underline
- * sidesteps that (and still reads correctly mixed with Latin) instead of
- * leaning on a broken slant. */
+/* No italic cut for Songti/Noto Serif SC — italic fakes an oblique skew on
+ * CJK glyphs. Wavy underline instead. */
 .article-content em {
   font-style: normal;
   text-decoration-line: underline;
@@ -643,11 +594,8 @@
   text-underline-offset: 0.2em;
 }
 
-/* Highlight: a highlighter-pen band, not a filled chip — the background
- * gradient clips to the lower two-thirds of the glyph instead of a full
- * box wrapping the line height, so it sits behind the text like an
- * actual highlighter stroke (ascenders poke through the top) rather than
- * reading as a generic UI "tag". */
+/* Gradient clipped to the lower two-thirds of the glyph, not a full box —
+ * reads as a highlighter stroke, not a UI "tag". */
 .article-content mark {
   background-color: transparent;
   background-image: linear-gradient(var(--color-accent-subtle), var(--color-accent-subtle));
@@ -794,11 +742,8 @@
 .callout-content > *:first-child { margin-top: 0; }
 .callout-content > *:last-child  { margin-bottom: 0; }
 
-/* ── Responsive images ──────────────────────────────────────────────────
- * border-radius bumped from 2px (close enough to a hard corner that it
- * read as unrounded at photo scale) to 8px — soft enough to take the
- * edge off without turning images into rounded "cards".
- * ────────────────────────────────────────────── */
+/* ── Responsive images ── */
+/* 8px, not 2px — soft corner without a "card" look. */
 .article-content img {
   max-width: 100%;
   height: auto;

@@ -84,7 +84,11 @@ enableRobotsTXT = true
     [markup.goldmark.renderer]
       unsafe = true
   [markup.highlight]
-    style = "monokai"
+    # noClasses = false is required — the theme recolors code blocks itself
+    # (pages/post.css, .chroma token classes) to match light/dark mode.
+    # Leaving this at the Hugo default (true) bakes a fixed color scheme
+    # into inline styles instead, which the theme's CSS can't override.
+    noClasses = false
     lineNos = false
 
 [pagination]

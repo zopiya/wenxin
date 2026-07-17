@@ -17,6 +17,8 @@
 - **完整响应式** — 桌面 / 平板 / 手机三端适配
 - **无障碍支持** — WCAG 2.1 AA，键盘友好，屏幕阅读器兼容
 - **中文优先** — 天干地支日期、完整 i18n（中英双语）
+- **分层强调排版** — 加粗 / 斜体 / 下划线 / 删除线 / 高亮通过线形（实线、波浪线、点线……）区分层级，强调色只留给少数关键处
+- **代码块跟随主题配色** — 语法高亮托管给主题自身而非 Chroma 内置配色方案，自动适配亮 / 暗色模式（需 `noClasses = false`，见「配置」）
 - **自托管字体** — Lora、EB Garamond、JetBrains Mono（无外部 CDN 依赖）
 - **零框架** — 纯 HTML / CSS / ES6+ JavaScript
 - **平滑滚动** — Lenis（桌面端）
@@ -122,6 +124,17 @@ RSS 订阅按钮固定显示，无需手动配置。
   measurementId = "G-XXXXXXXXXX"
 ```
 
+### 代码高亮
+
+代码块配色由主题自身托管（`pages/post.css` 里的 `.chroma` 规则），跟随亮 / 暗色模式；这要求 Goldmark 用 class 而非内联样式输出高亮结果：
+
+```toml
+[markup.highlight]
+  noClasses = false
+```
+
+漏配的话 Chroma 会退回内联样式，主题的配色规则将不生效。
+
 ## 内容结构
 
 ```
@@ -218,4 +231,4 @@ PJAX 在移动端（≤768px）自动禁用，使用完整页面加载。
 
 ## 许可
 
-MIT © [Zopiya](https://wenxin.blog)
+MIT © [Zopiya](https://blog.zopiya.com)
