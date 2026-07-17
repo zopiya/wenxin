@@ -1,15 +1,55 @@
 
+/* ── Post-page layout: article centered, sidebar is decoration ───────────
+ *
+ * The old rule here (grid-template-columns: 100px var(--width-article);
+ * width: fit-content) put the sidebar in a grid column, so the article
+ * sat flush against it on the LEFT of the viewport — the optical center
+ * landed well left of screen center, and the sidebar read as a "second
+ * column" rather than a decorative mark.
+ *
+ * Below removes the sidebar from the layout calculation entirely: the
+ * page becomes a single full-width column with symmetric left/right
+ * padding, the article centers inside it with margin: 0 auto (article
+ * center = page center), and the sidebar becomes position: absolute,
+ * positioned with calc(50% - article-width/2 - gap) so it hangs just
+ * outside the article's left edge WITHOUT being part of the box the
+ * article centers within. (position: absolute, not fixed — .page-layout
+ * has animation: fadeUp using transform: translateY(...) in layout.css,
+ * and any ancestor with a transform becomes the containing block for
+ * fixed descendants, so position: fixed would anchor to .page-layout's
+ * full height instead of the viewport and fall off-screen.)
+ * ─────────────────────────────────────────────────────────────────────── */
+
 .page-layout {
-  grid-template-columns: 100px var(--width-article);
-  gap: var(--space-10);
-  width: fit-content;
+  grid-template-columns: 1fr;
+  width: 100%;
   max-width: none;
+  margin: 0;
+  padding: var(--space-32) clamp(24px, 6vw, 72px); /* symmetric */
+  position: relative;
 }
 
 .sidebar {
   min-height: 0;
   align-items: center;
   transition: opacity var(--duration-fast) var(--ease-out);
+  position: absolute;
+  top: var(--space-32);
+  /* left: measured from .page-layout's own box (it's the positioned
+     ancestor and spans full page width) — same coordinate space
+     .article-wrapper's margin: 0 auto centers within below, so this
+     reliably lands just left of the article's rendered edge as long as
+     the article is at its intrinsic --width-article width (true above
+     the 640px breakpoint, where max-width: 100% isn't clamping it down
+     and the sidebar switches to a normal grid column instead). */
+  left: max(24px, calc(50% - (var(--width-article) / 2) - clamp(56px, 6vw, 96px)));
+}
+
+.article-wrapper {
+  min-width: 0;
+  width: var(--width-article);
+  max-width: 100%;
+  margin: 0 auto; /* centers within the symmetric padding box above */
 }
 
 .brand-block {
@@ -32,7 +72,6 @@
   color: inherit;
 }
 
-.article-wrapper { min-width: 0; }
 .article-container { width: 100%; }
 
 .article-header {
@@ -68,18 +107,58 @@
   color: var(--color-border-strong);
 }
 
+/* ── Mixed CJK/Latin typesetting ──────────────────────────────────────────
+ * Not font-specific — this is CJK/Latin mixed-typesetting behavior from
+ * 中文文案排版指北 (sparanoid/chinese-copywriting-guidelines, the
+ * commonly-cited community spec for this) and stays correct regardless of
+ * which CJK typeface --font-body resolves to on a given platform:
+ *
+ *   - text-autospace (CSS Text L4) inserts a ¼em gap around Latin letters
+ *     and digits embedded in CJK runs. word-spacing is the legacy
+ *     fallback that produces a similar (less precise) effect on browsers
+ *     that don't support text-autospace yet.
+ *   - font-variant-numeric: tabular-nums keeps digit columns aligned
+ *     across line wraps; oldstyle-nums gives Latin copy a classical look
+ *     (3/5/7/9 dip below the baseline instead of flat lining-nums).
+ *   - font-feature-settings enables OpenType features: kern (pair
+ *     spacing), liga (Latin ligatures), calt (contextual alternates),
+ *     palt (proportional alternates — tightens CJK punctuation spacing).
+ *   - hyphens: manual (was auto) — auto hyphenation occasionally splits
+ *     English words mid-line and serves no purpose for CJK text.
+ *   - line-break: strict turns on the stricter 避头尾 (kinsoku shori)
+ *     line-breaking rules — punctuation like 」。，、 never starts a line.
+ *     Most current browsers already default CJK to this, but it's not
+ *     universal, so it's declared explicitly rather than relied on as a
+ *     default.
+ * ─────────────────────────────────────────────────────────────────────── */
 .article-content {
   font-size: var(--text-md);
-  hyphens: auto;
+  hyphens: manual;
   widows: 2;
   orphans: 2;
   overflow-wrap: break-word;
   word-break: break-word;
+  text-autospace: ideograph-alpha ideograph-numeric;
+  word-spacing: 0.05em;
+  font-variant-numeric: tabular-nums oldstyle-nums;
+  font-feature-settings: "kern" 1, "liga" 1, "calt" 1, "palt" 1;
+  line-break: strict;
 }
 
 .article-content p {
-  margin-bottom: var(--space-5);
+  /* line-height 1.75 sits in the commonly-cited 1.6–1.8 range for CJK
+     body copy at reading size — a touch looser than the 1.6 this used to
+     inherit from body, which read tight for Chinese serif at 18px. */
+  line-height: 1.75;
+  margin-bottom: var(--space-3);
   text-align: start;
+}
+
+.article-content strong {
+  /* De-emphasize inline bold, let context carry emphasis instead — a
+     style choice for a uniform body gray, not a font-weight workaround. */
+  font-weight: inherit;
+  color: inherit;
 }
 
 .article-content h2 {
@@ -280,12 +359,43 @@
 .post-nav a:active .post-nav-title { color: var(--color-accent); opacity: 0.7; }
 .post-nav-next { text-align: right; }
 
-/* Tablet: spine sidebar + fluid article width (avoids fit-content overflow on narrow screens) */
+/* ── Tablet & mobile: NOT a scaled-down copy of the desktop rule ─────────
+ *
+ * The desktop treatment above (absolute-positioned sidebar hung beside a
+ * centered article via calc()) is a wide-viewport trick: it only works
+ * because there's slack space on both sides of the article to hang the
+ * brand mark in. Reusing it at tablet widths caused the sidebar's
+ * calc()-based position and the article's own max-width: 100% cap to
+ * disagree once the viewport got tight, and the brand mark collided with
+ * the title. Tablet and mobile get their own treatment instead:
+ *
+ *   - Tablet (640–1024px): the brand mark goes back to being a normal
+ *     grid column (sticky, not absolutely positioned) and the article
+ *     fills the remaining 1fr fluidly instead of being held to the
+ *     desktop-tuned --width-article clamp. No calc()-guessing, so no
+ *     collision is possible — the grid track math is exact.
+ *   - Mobile (<640px): the brand mark is a home-page link, which a phone
+ *     reader doesn't need dedicated chrome for — it's dropped entirely
+ *     rather than reflowed, giving the article the full width instead of
+ *     spending vertical space on a horizontal brand bar.
+ * ─────────────────────────────────────────────────────────────────────── */
+
 @media (max-width: 1024px) and (min-width: 640px) {
   .page-layout {
-    grid-template-columns: 72px 1fr;
-    gap: var(--space-8);
-    width: auto;
+    grid-template-columns: clamp(56px, 8vw, 96px) 1fr;
+    gap: var(--space-10);
+    padding: var(--space-24) clamp(20px, 4vw, 56px);
+  }
+  .sidebar {
+    position: sticky;
+    top: var(--space-24);
+    left: auto;
+    min-height: 0;
+  }
+  .article-wrapper {
+    width: 100%;
+    max-width: none;
+    margin: 0;
   }
   .brand-name-vertical { font-size: 1.75rem; }
 }
@@ -293,14 +403,13 @@
 @media (max-width: 639px) {
   .page-layout {
     grid-template-columns: 1fr;
-    width: auto;
-    gap: var(--space-8);
+    padding: var(--space-12) clamp(20px, 5vw, 48px);
   }
-  .brand-block { flex-direction: row; gap: var(--space-2); }
-  .brand-name-vertical {
-    writing-mode: horizontal-tb;
-    font-size: 1.5rem;
-    letter-spacing: var(--tracking-chinese);
+  .sidebar { display: none; }
+  .article-wrapper {
+    width: 100%;
+    max-width: none;
+    margin: 0;
   }
 
   .article-header { margin-bottom: var(--space-8); }
