@@ -9,16 +9,21 @@
   var MAX_CACHE_SIZE = 20;
   var navVersion = 0;
 
-  function trackPageview(url) {
-    // Google Analytics — gtag queue is available immediately
+  function trackPageview(url, isPop) {
+    // Google Analytics — gtag queue is available immediately. GA's own
+    // send_page_view is disabled (see head.html), so unlike Umami below,
+    // every SPA nav — push and pop alike — must be reported manually here.
     if (typeof window.gtag === 'function' && window.gaMeasurementId) {
-      window.gtag('config', window.gaMeasurementId, {
-        page_path: url,
+      window.gtag('event', 'page_view', {
+        page_location: url,
         page_title: document.title
       });
     }
-    // Umami — available after its script loads
-    if (window.umami && typeof window.umami.track === 'function') {
+    // Umami — the tracker hooks history.pushState/replaceState and records
+    // push-navigations itself; it does NOT listen on popstate, so only
+    // back/forward (isPop) needs a manual pageview here. Tracking both would
+    // double-count forward navigations.
+    if (isPop && window.umami && typeof window.umami.track === 'function') {
       window.umami.track({ url: url, title: document.title });
     }
   }
@@ -161,8 +166,8 @@
       });
     });
 
-    // Notify analytics of SPA navigation
-    trackPageview(url);
+    // Notify analytics of SPA navigation (popstate only — see trackPageview)
+    trackPageview(url, !push);
 
     // Delay Lenis reinit until fade-in animation completes
     setTimeout(function () {

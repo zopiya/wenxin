@@ -140,7 +140,9 @@
 {{/* ── Analytics Resource Hints ── */}}
 {{ with site.Params.analytics.umami }}
 {{- $host := .src | replaceRE "^https?://([^/]+)/.*" "$1" -}}
+{{- if ne $host .src }}
 <link rel="preconnect" href="https://{{ $host }}" crossorigin>
+{{- end }}
 {{ end }}
 {{ with site.Params.analytics.google }}
 <link rel="preconnect" href="https://www.googletagmanager.com" crossorigin>
@@ -156,6 +158,11 @@
       var s = document.createElement('script');
       s.src = src;
       s.dataset.websiteId = websiteId;
+      {{ if .performance }}s.dataset.performance = 'true';{{ end }}
+      {{ with .hostUrl }}s.dataset.hostUrl = '{{ . }}';{{ end }}
+      {{ if and .domains (not hugo.IsServer) }}s.dataset.domains = '{{ .domains }}';{{ end }}
+      {{ if .doNotTrack }}s.dataset.doNotTrack = 'true';{{ end }}
+      {{ if .excludeHash }}s.dataset.excludeHash = 'true';{{ end }}
       s.async = true;
       s.fetchPriority = 'low';
       document.head.appendChild(s);
@@ -173,6 +180,10 @@
 {{ with site.Params.analytics.google }}
 <script>
   (function() {
+    {{ if not hugo.IsServer }}
+    // 仅统计正式域名，避免 Pages 预览部署 / 本地调试污染数据（对齐 umami 的 domains 限制）
+    if (location.hostname !== '{{ (urls.Parse site.BaseURL).Host }}') return;
+    {{ end }}
     var measurementId = '{{ .measurementId }}';
     // Initialize dataLayer and gtag queue immediately so commands are never lost
     window.dataLayer = window.dataLayer || [];
@@ -180,7 +191,12 @@
     window.gtag = gtag;
     window.gaMeasurementId = measurementId;
     gtag('js', new Date());
-    gtag('config', measurementId);
+    // send_page_view:false — page_view 统一由本文件（首次进入）与 pjax.js（SPA 切页）
+    // 手动上报，避免和 GA4 Enhanced Measurement 的「基于浏览器历史记录事件的网页更改」
+    // 自动上报重复计数。启用 GA 时记得去 GA4 后台 Admin → 数据流 → Enhanced measurement
+    // 关闭该选项，否则 pjax 切页会被 GA 自己的 history 监听再报一次。
+    gtag('config', measurementId, { send_page_view: false });
+    gtag('event', 'page_view', { page_location: location.href, page_title: document.title });
     // Defer only the heavy script download
     function loadScript() {
       var s = document.createElement('script');
