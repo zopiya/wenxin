@@ -2,6 +2,13 @@
 
 All notable changes to the Wenxin Hugo Theme will be documented in this file.
 
+## [Unreleased]
+
+### Changed
+- JSON-LD 站点、作者与发布者身份改由站点配置提供，不再包含任何站点专属域名或作者信息。
+- 新增可配置的 Web App Manifest 输出，PWA 名称与颜色从站点配置读取。
+- 默认分享图改为中性的 Wenxin 主题图。
+
 ## [1.0.0] - 2026-04-22
 
 ### Added

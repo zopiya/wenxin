@@ -86,11 +86,19 @@
 {{ $faviconVersion := .Site.Params.faviconVersion | default "" }}
 {{ $faviconQuery := "" }}
 {{ with $faviconVersion }}{{ $faviconQuery = printf "?v=%s" . }}{{ end }}
-<link rel="icon" type="image/png" href="/favicon-96x96.png{{ $faviconQuery }}" sizes="96x96">
-<link rel="icon" type="image/svg+xml" href="/favicon.svg{{ $faviconQuery }}">
-<link rel="shortcut icon" href="/favicon.ico{{ $faviconQuery }}">
-<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png{{ $faviconQuery }}">
+{{ $favicon96 := .Site.Params.brand.favicon96 | default "/favicon-96x96.png" }}
+{{ $faviconSVG := .Site.Params.brand.faviconSVG | default "/favicon.svg" }}
+{{ $faviconICO := .Site.Params.brand.faviconICO | default "/favicon.ico" }}
+{{ $appleTouchIcon := .Site.Params.brand.appleTouchIcon | default "/apple-touch-icon.png" }}
+<link rel="icon" type="image/png" href="{{ $favicon96 }}{{ $faviconQuery }}" sizes="96x96">
+<link rel="icon" type="image/svg+xml" href="{{ $faviconSVG }}{{ $faviconQuery }}">
+<link rel="shortcut icon" href="{{ $faviconICO }}{{ $faviconQuery }}">
+<link rel="apple-touch-icon" sizes="180x180" href="{{ $appleTouchIcon }}{{ $faviconQuery }}">
+{{ with .Site.Home.OutputFormats.Get "webappmanifest" }}
+<link rel="manifest" href="{{ .RelPermalink }}{{ $faviconQuery }}">
+{{ else }}
 <link rel="manifest" href="/site.webmanifest{{ $faviconQuery }}">
+{{ end }}
 
 {{/* ── Icons ── */}}
 {{ with resources.Get "vendor/phosphor/phosphor.css" }}
@@ -98,16 +106,22 @@
 {{ end }}
 
 {{/* ── JSON-LD Structured Data ── */}}
+{{ $siteType := .Site.Params.schema.siteType | default "Blog" }}
+{{ $siteID := .Site.Params.schema.siteID | default (printf "%s#blog" .Site.BaseURL) }}
+{{ $authorName := .Site.Params.author | default .Site.Title }}
+{{ $authorType := .Site.Params.schema.authorType | default "Person" }}
+{{ $authorURL := .Site.Params.schema.authorURL | default .Site.BaseURL }}
+{{ $authorID := .Site.Params.schema.authorID | default (printf "%s#author" $authorURL) }}
 {{ if .IsHome }}
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "Blog",
+  "@type": {{ $siteType | jsonify | safeJS }},
   "name": {{ .Site.Title | jsonify | safeJS }},
   "description": {{ .Site.Params.description | default "" | jsonify | safeJS }},
   "url": {{ .Site.BaseURL | jsonify | safeJS }},
-  "@id": "https://blog.zopiya.com/#blog",
-  "author": { "@id": "https://me.zopiya.com/#person", "@type": "Person", "name": "仲平", "url": "https://me.zopiya.com/zh/" }
+  "@id": {{ $siteID | jsonify | safeJS }},
+  "author": { "@id": {{ $authorID | jsonify | safeJS }}, "@type": {{ $authorType | jsonify | safeJS }}, "name": {{ $authorName | jsonify | safeJS }}, "url": {{ $authorURL | jsonify | safeJS }} }
 }
 </script>
 {{ else if .IsPage }}
@@ -120,9 +134,9 @@
   "description": {{ with .Description }}{{ . | jsonify | safeJS }}{{ else }}{{ with .Params.abstract }}{{ . | jsonify | safeJS }}{{ else }}""{{ end }}{{ end }},
   "url": {{ .Permalink | jsonify | safeJS }},
   "mainEntityOfPage": { "@type": "WebPage", "@id": {{ .Permalink | jsonify | safeJS }} },
-  "isPartOf": { "@id": "https://blog.zopiya.com/#blog" },
-  "author": { "@id": "https://me.zopiya.com/#person", "@type": "Person", "name": "仲平", "url": "https://me.zopiya.com/zh/" },
-  "publisher": { "@id": "https://me.zopiya.com/#person", "@type": "Person", "name": "仲平", "url": "https://me.zopiya.com/zh/" },
+  "isPartOf": { "@id": {{ $siteID | jsonify | safeJS }} },
+  "author": { "@id": {{ $authorID | jsonify | safeJS }}, "@type": {{ $authorType | jsonify | safeJS }}, "name": {{ $authorName | jsonify | safeJS }}, "url": {{ $authorURL | jsonify | safeJS }} },
+  "publisher": { "@id": {{ $authorID | jsonify | safeJS }}, "@type": {{ $authorType | jsonify | safeJS }}, "name": {{ $authorName | jsonify | safeJS }}, "url": {{ $authorURL | jsonify | safeJS }} },
   "datePublished": {{ .Date.Format "2006-01-02" | jsonify | safeJS }},
   "dateModified": {{ .Lastmod.Format "2006-01-02" | jsonify | safeJS }}{{ with $ogImage }},
   "image": {{ . | jsonify | safeJS }}{{ end }}{{ with .Params.tags }},

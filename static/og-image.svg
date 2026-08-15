@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
-  <title id="title">仲平 · 文辑</title><desc id="desc">仲平（Zopiya）的长文写作</desc>
+  <title id="title">Wenxin</title><desc id="desc">A Hugo theme for long-form writing</desc>
   <rect width="1200" height="630" fill="#F2F0EB"/><rect x="72" y="78" width="8" height="474" fill="#8B3525"/><circle cx="1080" cy="108" r="12" fill="#8B3525"/>
-  <text x="132" y="235" fill="#2C2B29" font-family="STSong, Songti SC, Noto Serif CJK SC, serif" font-size="104" font-weight="600">仲平 · 文辑</text><text x="137" y="310" fill="#65615D" font-family="Georgia, serif" font-size="34" letter-spacing="12">ZOPIYA · WRITING</text>
-  <line x1="132" y1="370" x2="714" y2="370" stroke="#C9C4BC" stroke-width="2"/><text x="132" y="432" fill="#4A4743" font-family="STSong, Songti SC, Noto Serif CJK SC, serif" font-size="34">工程、构建、旅行、创作与思考</text><text x="132" y="490" fill="#65615D" font-family="STSong, Songti SC, Noto Serif CJK SC, serif" font-size="26">Long-form writing by 仲平（Zopiya）</text>
+  <text x="132" y="235" fill="#2C2B29" font-family="STSong, Songti SC, Noto Serif CJK SC, serif" font-size="104" font-weight="600">文心</text><text x="137" y="310" fill="#65615D" font-family="Georgia, serif" font-size="34" letter-spacing="12">WENXIN · HUGO THEME</text>
+  <line x1="132" y1="370" x2="714" y2="370" stroke="#C9C4BC" stroke-width="2"/><text x="132" y="432" fill="#4A4743" font-family="STSong, Songti SC, Noto Serif CJK SC, serif" font-size="34">为长篇写作而生的 Hugo 主题</text><text x="132" y="490" fill="#65615D" font-family="Georgia, serif" font-size="26">A theme for thoughtful writing</text>
 </svg>

@@ -1,5 +1,5 @@
 baseURL = "https://example.com/"
-languageCode = "zh-CN"
+locale = "zh-CN"
 title = "文心"
 theme = "wenxin"
 defaultContentLanguage = "zh"
@@ -17,6 +17,30 @@ enableRobotsTXT = true
 
   # Twitter 用户名（不含 @，用于 twitter:creator）
   # twitter_username = "yourname"
+
+  # 结构化数据。未设置时，主题使用 author 与站点 baseURL 作为安全回退。
+  [params.schema]
+    siteType = "Blog"
+    siteID = "https://example.com/#blog"
+    authorType = "Person"
+    authorURL = "https://example.com/about/"
+    authorID = "https://example.com/about/#person"
+
+  # PWA manifest。需要在 [outputs] 的 home 中加入 "WebAppManifest"。
+  [params.pwa]
+    shortName = "文心"
+    themeColor = "#8B3525"
+    backgroundColor = "#F2F0EB"
+    display = "standalone"
+    icon192 = "/web-app-manifest-192x192.png"
+    icon512 = "/web-app-manifest-512x512.png"
+
+  # 品牌图标。未设置时，使用主题提供的中性默认图标。
+  [params.brand]
+    favicon96 = "/favicon-96x96.png"
+    faviconSVG = "/favicon.svg"
+    faviconICO = "/favicon.ico"
+    appleTouchIcon = "/apple-touch-icon.png"
 
   # 社交链接 — 每条记录包含：
   #   icon  = Phosphor 图标类名（https://phosphoricons.com）
@@ -76,7 +100,7 @@ enableRobotsTXT = true
     noUgly = true
 
 [outputs]
-  home = ["HTML", "RSS", "RSSIndex", "Feed"]
+  home = ["HTML", "RSS", "RSSIndex", "Feed", "WebAppManifest"]
   section = ["HTML"]
 
 [markup]
