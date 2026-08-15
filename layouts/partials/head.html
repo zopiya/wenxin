@@ -7,16 +7,24 @@
 <meta property="og:description" content="{{ with .Description }}{{ . }}{{ else }}{{ with .Params.abstract }}{{ . }}{{ else }}{{ .Site.Params.description | default "" }}{{ end }}{{ end }}">
 <meta property="og:site_name" content="{{ .Site.Title }}">
 <meta property="og:url" content="{{ .Permalink }}">
+<meta property="og:locale" content="{{ replace (.Site.Language.Locale | default "zh-CN") "-" "_" }}">
 {{ $ogImage := "" }}
+{{ $usingDefaultOgImage := false }}
 {{ if .IsPage }}{{ with .Params.image }}{{ $ogImage = . | absURL }}{{ end }}{{ end }}
-{{ if not $ogImage }}{{ with .Site.Params.og_image }}{{ $ogImage = . | absURL }}{{ end }}{{ end }}
-{{ with $ogImage }}<meta property="og:image" content="{{ . }}">{{ end }}
+{{ if not $ogImage }}{{ with .Site.Params.og_image }}{{ $ogImage = . | absURL }}{{ $usingDefaultOgImage = true }}{{ end }}{{ end }}
+{{ with $ogImage }}
+<meta property="og:image" content="{{ . }}">
+{{ if $usingDefaultOgImage }}<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">{{ end }}
+<meta property="og:image:alt" content="{{ $.Title | default $.Site.Title }}">
+{{ end }}
 
 {{/* ── Twitter Card ── */}}
 <meta name="twitter:card" content="{{ if $ogImage }}summary_large_image{{ else }}summary{{ end }}">
 <meta name="twitter:title" content="{{ .Title | default .Site.Title }}">
 <meta name="twitter:description" content="{{ with .Description }}{{ . }}{{ else }}{{ with .Params.abstract }}{{ . }}{{ else }}{{ .Site.Params.description | default "" }}{{ end }}{{ end }}">
-{{ with $ogImage }}<meta name="twitter:image" content="{{ . }}">{{ end }}
+{{ with $ogImage }}<meta name="twitter:image" content="{{ . }}">
+<meta name="twitter:image:alt" content="{{ $.Title | default $.Site.Title }}">{{ end }}
 {{ with .Site.Params.twitter_username }}<meta name="twitter:creator" content="@{{ . }}">{{ end }}
 
 {{/* ── Article meta (Open Graph) ── */}}
@@ -95,10 +103,11 @@
 {
   "@context": "https://schema.org",
   "@type": "Blog",
-  "name": {{ .Site.Title | jsonify }},
-  "description": {{ .Site.Params.description | default "" | jsonify }},
-  "url": {{ .Site.BaseURL | jsonify }},
-  "author": { "@type": "Person", "name": {{ .Site.Params.author | jsonify }} }
+  "name": {{ .Site.Title | jsonify | safeJS }},
+  "description": {{ .Site.Params.description | default "" | jsonify | safeJS }},
+  "url": {{ .Site.BaseURL | jsonify | safeJS }},
+  "@id": "https://blog.zopiya.com/#blog",
+  "author": { "@id": "https://me.zopiya.com/#person", "@type": "Person", "name": "仲平", "url": "https://me.zopiya.com/zh/" }
 }
 </script>
 {{ else if .IsPage }}
@@ -106,14 +115,18 @@
 {
   "@context": "https://schema.org",
   "@type": "BlogPosting",
-  "headline": {{ .Title | jsonify }},
-  "description": {{ with .Description }}{{ . | jsonify }}{{ else }}{{ with .Params.abstract }}{{ . | jsonify }}{{ else }}""{{ end }}{{ end }},
-  "url": {{ .Permalink | jsonify }},
-  "author": { "@type": "Person", "name": {{ .Site.Params.author | jsonify }} },
-  "publisher": { "@type": "Person", "name": {{ .Site.Params.author | jsonify }} },
-  "datePublished": {{ .Date.Format "2006-01-02" | jsonify }},
-  "dateModified": {{ .Lastmod.Format "2006-01-02" | jsonify }}{{ with .Params.tags }},
-  "keywords": {{ delimit . ", " | jsonify }}{{ end }}
+  "@id": {{ .Permalink | jsonify | safeJS }},
+  "headline": {{ .Title | jsonify | safeJS }},
+  "description": {{ with .Description }}{{ . | jsonify | safeJS }}{{ else }}{{ with .Params.abstract }}{{ . | jsonify | safeJS }}{{ else }}""{{ end }}{{ end }},
+  "url": {{ .Permalink | jsonify | safeJS }},
+  "mainEntityOfPage": { "@type": "WebPage", "@id": {{ .Permalink | jsonify | safeJS }} },
+  "isPartOf": { "@id": "https://blog.zopiya.com/#blog" },
+  "author": { "@id": "https://me.zopiya.com/#person", "@type": "Person", "name": "仲平", "url": "https://me.zopiya.com/zh/" },
+  "publisher": { "@id": "https://me.zopiya.com/#person", "@type": "Person", "name": "仲平", "url": "https://me.zopiya.com/zh/" },
+  "datePublished": {{ .Date.Format "2006-01-02" | jsonify | safeJS }},
+  "dateModified": {{ .Lastmod.Format "2006-01-02" | jsonify | safeJS }}{{ with $ogImage }},
+  "image": {{ . | jsonify | safeJS }}{{ end }}{{ with .Params.tags }},
+  "keywords": {{ delimit . ", " | jsonify | safeJS }}{{ end }}
 }
 </script>
 <script type="application/ld+json">
@@ -124,14 +137,14 @@
     {
       "@type": "ListItem",
       "position": 1,
-      "name": {{ .Site.Title | jsonify }},
-      "item": {{ .Site.BaseURL | jsonify }}
+      "name": {{ .Site.Title | jsonify | safeJS }},
+      "item": {{ .Site.BaseURL | jsonify | safeJS }}
     }{{ if not .IsHome }},
     {
       "@type": "ListItem",
       "position": 2,
-      "name": {{ .Title | jsonify }},
-      "item": {{ .Permalink | jsonify }}
+      "name": {{ .Title | jsonify | safeJS }},
+      "item": {{ .Permalink | jsonify | safeJS }}
     }
     {{ end }}
   ]
