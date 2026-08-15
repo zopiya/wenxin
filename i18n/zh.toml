@@ -13,6 +13,9 @@
 [a11yMainNav]
   other = "主导航"
 
+[a11yFooterNav]
+  other = "站点导航"
+
 [a11yPostNav]
   other = "文章前后导航"
 
@@ -56,7 +59,7 @@
   other = "核心观点"
 
 [pullQuoteDefaultAuthor]
-  other = "仲平的观察"
+  other = "作者的观察"
 
 [readTimeVeryShort]
   other = "弹指可览"

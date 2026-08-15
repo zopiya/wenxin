@@ -133,6 +133,35 @@ body {
   margin: 0 auto;
 }
 
+.site-footer-network {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-4);
+  margin-bottom: var(--space-3);
+  font-family: var(--font-ui);
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-wide);
+}
+
+.site-footer-network a,
+.site-footer-network span {
+  color: var(--color-text-functional);
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+  transition: color var(--duration-fast), text-decoration-color var(--duration-fast);
+}
+.site-footer-network a:hover {
+  color: var(--color-accent);
+  text-decoration-color: currentColor;
+}
+.site-footer-network [aria-current="page"] {
+  color: var(--color-text-primary);
+  text-decoration-color: var(--color-accent);
+}
+
 .site-footer-text {
   font-family: var(--font-ui);
   font-size: var(--text-xs);

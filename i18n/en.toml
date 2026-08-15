@@ -13,6 +13,9 @@
 [a11yMainNav]
   other = "Main navigation"
 
+[a11yFooterNav]
+  other = "Site navigation"
+
 [a11yPostNav]
   other = "Post navigation"
 
