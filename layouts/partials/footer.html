@@ -5,7 +5,7 @@
       {{ if eq .Identifier $.Site.Params.networkCurrent }}
       <span aria-current="page" data-site-nav-key="{{ .Identifier }}">{{ .Name }}</span>
       {{ else }}
-      <a href="{{ .URL }}" data-site-nav-key="{{ .Identifier }}">{{ .Name }}</a>
+      <a href="{{ .URL }}" target="_blank" rel="noopener noreferrer" data-site-nav-key="{{ .Identifier }}">{{ .Name }}</a>
       {{ end }}
     {{ end }}
   </nav>

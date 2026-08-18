@@ -38,6 +38,7 @@
 
 {{/* ── Canonical & feeds ── */}}
 <link rel="canonical" href="{{ .Permalink }}">
+{{ with .Site.Params.schema.authorURL }}<link rel="author" href="{{ . }}">{{ end }}
 <link rel="alternate" type="application/rss+xml" title="{{ .Site.Title }} RSS" href="{{ "rss.xml" | relURL }}">
 
 {{/* ── Browser compatibility check (inline, no dependency) ── */}}
@@ -112,6 +113,16 @@
 {{ $authorType := .Site.Params.schema.authorType | default "Person" }}
 {{ $authorURL := .Site.Params.schema.authorURL | default .Site.BaseURL }}
 {{ $authorID := .Site.Params.schema.authorID | default (printf "%s#author" $authorURL) }}
+{{ with .Site.Params.siteNetwork }}
+  {{ $network := . }}
+  {{ $person := dict "@type" "Person" "@id" $network.person.id "name" $network.person.name "alternateName" $network.person.alternateName "url" $network.person.url }}
+  {{ $items := slice }}
+  {{ range $network.items }}
+    {{ $items = $items | append (dict "@type" .type "@id" .id "name" .name "url" .url) }}
+  {{ end }}
+  {{ $networkGraph := dict "@context" "https://schema.org" "@graph" (slice $person (dict "@type" "ItemList" "@id" $network.id "name" $network.name "itemListElement" $items)) }}
+<script type="application/ld+json">{{ $networkGraph | jsonify | safeJS }}</script>
+{{ end }}
 {{ if .IsHome }}
 <script type="application/ld+json">
 {

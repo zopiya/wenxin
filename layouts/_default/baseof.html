@@ -8,7 +8,6 @@
   <title>{{ block "title" . }}{{ .Site.Title }}{{ end }}</title>
 </head>
 <body>
-  {{ with .Site.Params.aiContext }}<section class="visually-hidden" data-ai-context="site-network" aria-hidden="true">{{ . }}</section>{{ end }}
   <a href="#main-content" class="skip-link">{{ i18n "a11ySkipLink" }}</a>
 
   <div class="page-layout">
