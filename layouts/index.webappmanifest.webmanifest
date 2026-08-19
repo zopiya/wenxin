@@ -1,0 +1,27 @@
+{{- $shortName := .Site.Params.pwa.shortName | default .Site.Title -}}
+{{- $themeColor := .Site.Params.pwa.themeColor | default "#8B3525" -}}
+{{- $backgroundColor := .Site.Params.pwa.backgroundColor | default "#F2F0EB" -}}
+{{- $display := .Site.Params.pwa.display | default "standalone" -}}
+{{- $icon192 := .Site.Params.pwa.icon192 | default "/web-app-manifest-192x192.png" -}}
+{{- $icon512 := .Site.Params.pwa.icon512 | default "/web-app-manifest-512x512.png" -}}
+{
+  "name": {{ .Site.Title | jsonify }},
+  "short_name": {{ $shortName | jsonify }},
+  "icons": [
+    {
+      "src": {{ $icon192 | jsonify }},
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": {{ $icon512 | jsonify }},
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "theme_color": {{ $themeColor | jsonify }},
+  "background_color": {{ $backgroundColor | jsonify }},
+  "display": {{ $display | jsonify }}
+}

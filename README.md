@@ -64,6 +64,29 @@ hasCJKLanguage = true
   bio         = "你的个人简介"
   description = "站点描述（用于 SEO）"
   readTime    = true
+
+  [params.schema]
+    # JSON-LD 的作者 / 发布者信息；不填则回退到 author 与 baseURL。
+    siteType   = "Blog"
+    siteID     = "https://example.com/#blog"
+    authorType = "Person"
+    authorURL  = "https://example.com/about/"
+    authorID   = "https://example.com/about/#person"
+
+  [params.pwa]
+    shortName       = "你的博客名"
+    themeColor      = "#8B3525"
+    backgroundColor = "#F2F0EB"
+    display         = "standalone"
+    icon192         = "/web-app-manifest-192x192.png"
+    icon512         = "/web-app-manifest-512x512.png"
+
+  [params.brand]
+    # 不设置时使用主题提供的中性图标。
+    favicon96      = "/favicon-96x96.png"
+    faviconSVG     = "/favicon.svg"
+    faviconICO     = "/favicon.ico"
+    appleTouchIcon = "/apple-touch-icon.png"
 ```
 
 ### 社交链接
@@ -123,6 +146,19 @@ RSS 订阅按钮固定显示，无需手动配置。
 [params.analytics.google]
   measurementId = "G-XXXXXXXXXX"
 ```
+
+### JSON-LD 与 PWA
+
+主题不会写入站点所属者或域名。`params.schema` 用于控制 JSON-LD 的站点、作者与发布者身份；未配置时，会使用 `params.author` 与 `baseURL` 作为通用回退。
+
+若要生成以站点标题命名的动态 PWA manifest，请在 `hugo.toml` 中启用 Hugo 内建输出格式：
+
+```toml
+[outputs]
+  home = ["HTML", "RSS", "WebAppManifest"]
+```
+
+`params.pwa` 可选配置短名称、颜色、显示模式和图标；`params.brand` 可配置页面 favicon 与 Apple 图标。未启用动态 manifest 时，主题仍提供中性名称为 Wenxin 的静态 manifest 作为回退。
 
 ### 代码高亮
 

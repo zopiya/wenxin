@@ -1,5 +1,16 @@
 <footer class="site-footer">
-  <p class="site-footer-text">© {{ now.Format "2006" }} {{ .Site.Params.author }}. {{ i18n "allRightsReserved" }}</p>
+  {{ with .Site.Menus.network }}
+  <nav class="site-footer-network" aria-label="{{ i18n "a11yFooterNav" }}" data-site-network>
+    {{ range . }}
+      {{ if eq .Identifier $.Site.Params.networkCurrent }}
+      <span aria-current="page" data-site-nav-key="{{ .Identifier }}">{{ .Name }}</span>
+      {{ else }}
+      <a href="{{ .URL }}" target="_blank" rel="noopener noreferrer" data-site-nav-key="{{ .Identifier }}">{{ .Name }}</a>
+      {{ end }}
+    {{ end }}
+  </nav>
+  {{ end }}
+  <p class="site-footer-text" data-site-copyright data-year="{{ now.Format "2006" }}">© {{ now.Format "2006" }} {{ .Site.Params.author }}. {{ i18n "allRightsReserved" }}</p>
 </footer>
 
 {{ with resources.Get "vendor/lenis/lenis.min.js" }}

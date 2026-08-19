@@ -3,7 +3,6 @@
   {{/* 首页 */}}
   <url>
     <loc>{{ .Site.Home.Permalink }}</loc>
-    <lastmod>{{ now.Format "2006-01-02T15:04:05-07:00" }}</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>

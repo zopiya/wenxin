@@ -7,16 +7,24 @@
 <meta property="og:description" content="{{ with .Description }}{{ . }}{{ else }}{{ with .Params.abstract }}{{ . }}{{ else }}{{ .Site.Params.description | default "" }}{{ end }}{{ end }}">
 <meta property="og:site_name" content="{{ .Site.Title }}">
 <meta property="og:url" content="{{ .Permalink }}">
+<meta property="og:locale" content="{{ replace (.Site.Language.Locale | default "zh-CN") "-" "_" }}">
 {{ $ogImage := "" }}
+{{ $usingDefaultOgImage := false }}
 {{ if .IsPage }}{{ with .Params.image }}{{ $ogImage = . | absURL }}{{ end }}{{ end }}
-{{ if not $ogImage }}{{ with .Site.Params.og_image }}{{ $ogImage = . | absURL }}{{ end }}{{ end }}
-{{ with $ogImage }}<meta property="og:image" content="{{ . }}">{{ end }}
+{{ if not $ogImage }}{{ with .Site.Params.og_image }}{{ $ogImage = . | absURL }}{{ $usingDefaultOgImage = true }}{{ end }}{{ end }}
+{{ with $ogImage }}
+<meta property="og:image" content="{{ . }}">
+{{ if $usingDefaultOgImage }}<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">{{ end }}
+<meta property="og:image:alt" content="{{ $.Title | default $.Site.Title }}">
+{{ end }}
 
 {{/* ── Twitter Card ── */}}
 <meta name="twitter:card" content="{{ if $ogImage }}summary_large_image{{ else }}summary{{ end }}">
 <meta name="twitter:title" content="{{ .Title | default .Site.Title }}">
 <meta name="twitter:description" content="{{ with .Description }}{{ . }}{{ else }}{{ with .Params.abstract }}{{ . }}{{ else }}{{ .Site.Params.description | default "" }}{{ end }}{{ end }}">
-{{ with $ogImage }}<meta name="twitter:image" content="{{ . }}">{{ end }}
+{{ with $ogImage }}<meta name="twitter:image" content="{{ . }}">
+<meta name="twitter:image:alt" content="{{ $.Title | default $.Site.Title }}">{{ end }}
 {{ with .Site.Params.twitter_username }}<meta name="twitter:creator" content="@{{ . }}">{{ end }}
 
 {{/* ── Article meta (Open Graph) ── */}}
@@ -30,6 +38,7 @@
 
 {{/* ── Canonical & feeds ── */}}
 <link rel="canonical" href="{{ .Permalink }}">
+{{ with .Site.Params.schema.authorURL }}<link rel="author" href="{{ . }}">{{ end }}
 <link rel="alternate" type="application/rss+xml" title="{{ .Site.Title }} RSS" href="{{ "rss.xml" | relURL }}">
 
 {{/* ── Browser compatibility check (inline, no dependency) ── */}}
@@ -75,11 +84,22 @@
 {{ end }}
 
 {{/* ── Favicon ── */}}
-<link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96">
-<link rel="icon" type="image/svg+xml" href="/favicon.svg">
-<link rel="shortcut icon" href="/favicon.ico">
-<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-<link rel="manifest" href="/site.webmanifest">
+{{ $faviconVersion := .Site.Params.faviconVersion | default "" }}
+{{ $faviconQuery := "" }}
+{{ with $faviconVersion }}{{ $faviconQuery = printf "?v=%s" . }}{{ end }}
+{{ $favicon96 := .Site.Params.brand.favicon96 | default "/favicon-96x96.png" }}
+{{ $faviconSVG := .Site.Params.brand.faviconSVG | default "/favicon.svg" }}
+{{ $faviconICO := .Site.Params.brand.faviconICO | default "/favicon.ico" }}
+{{ $appleTouchIcon := .Site.Params.brand.appleTouchIcon | default "/apple-touch-icon.png" }}
+<link rel="icon" type="image/png" href="{{ $favicon96 }}{{ $faviconQuery }}" sizes="96x96">
+<link rel="icon" type="image/svg+xml" href="{{ $faviconSVG }}{{ $faviconQuery }}">
+<link rel="shortcut icon" href="{{ $faviconICO }}{{ $faviconQuery }}">
+<link rel="apple-touch-icon" sizes="180x180" href="{{ $appleTouchIcon }}{{ $faviconQuery }}">
+{{ with .Site.Home.OutputFormats.Get "webappmanifest" }}
+<link rel="manifest" href="{{ .RelPermalink }}{{ $faviconQuery }}">
+{{ else }}
+<link rel="manifest" href="/site.webmanifest{{ $faviconQuery }}">
+{{ end }}
 
 {{/* ── Icons ── */}}
 {{ with resources.Get "vendor/phosphor/phosphor.css" }}
@@ -87,15 +107,32 @@
 {{ end }}
 
 {{/* ── JSON-LD Structured Data ── */}}
+{{ $siteType := .Site.Params.schema.siteType | default "Blog" }}
+{{ $siteID := .Site.Params.schema.siteID | default (printf "%s#blog" .Site.BaseURL) }}
+{{ $authorName := .Site.Params.author | default .Site.Title }}
+{{ $authorType := .Site.Params.schema.authorType | default "Person" }}
+{{ $authorURL := .Site.Params.schema.authorURL | default .Site.BaseURL }}
+{{ $authorID := .Site.Params.schema.authorID | default (printf "%s#author" $authorURL) }}
+{{ with .Site.Params.siteNetwork }}
+  {{ $network := . }}
+  {{ $person := dict "@type" "Person" "@id" $network.person.id "name" $network.person.name "alternateName" $network.person.alternateName "url" $network.person.url }}
+  {{ $items := slice }}
+  {{ range $network.items }}
+    {{ $items = $items | append (dict "@type" .type "@id" .id "name" .name "url" .url) }}
+  {{ end }}
+  {{ $networkGraph := dict "@context" "https://schema.org" "@graph" (slice $person (dict "@type" "ItemList" "@id" $network.id "name" $network.name "itemListElement" $items)) }}
+<script type="application/ld+json">{{ $networkGraph | jsonify | safeJS }}</script>
+{{ end }}
 {{ if .IsHome }}
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "Blog",
-  "name": {{ .Site.Title | jsonify }},
-  "description": {{ .Site.Params.description | default "" | jsonify }},
-  "url": {{ .Site.BaseURL | jsonify }},
-  "author": { "@type": "Person", "name": {{ .Site.Params.author | jsonify }} }
+  "@type": {{ $siteType | jsonify | safeJS }},
+  "name": {{ .Site.Title | jsonify | safeJS }},
+  "description": {{ .Site.Params.description | default "" | jsonify | safeJS }},
+  "url": {{ .Site.BaseURL | jsonify | safeJS }},
+  "@id": {{ $siteID | jsonify | safeJS }},
+  "author": { "@id": {{ $authorID | jsonify | safeJS }}, "@type": {{ $authorType | jsonify | safeJS }}, "name": {{ $authorName | jsonify | safeJS }}, "url": {{ $authorURL | jsonify | safeJS }} }
 }
 </script>
 {{ else if .IsPage }}
@@ -103,14 +140,18 @@
 {
   "@context": "https://schema.org",
   "@type": "BlogPosting",
-  "headline": {{ .Title | jsonify }},
-  "description": {{ with .Description }}{{ . | jsonify }}{{ else }}{{ with .Params.abstract }}{{ . | jsonify }}{{ else }}""{{ end }}{{ end }},
-  "url": {{ .Permalink | jsonify }},
-  "author": { "@type": "Person", "name": {{ .Site.Params.author | jsonify }} },
-  "publisher": { "@type": "Person", "name": {{ .Site.Params.author | jsonify }} },
-  "datePublished": {{ .Date.Format "2006-01-02" | jsonify }},
-  "dateModified": {{ .Lastmod.Format "2006-01-02" | jsonify }}{{ with .Params.tags }},
-  "keywords": {{ delimit . ", " | jsonify }}{{ end }}
+  "@id": {{ .Permalink | jsonify | safeJS }},
+  "headline": {{ .Title | jsonify | safeJS }},
+  "description": {{ with .Description }}{{ . | jsonify | safeJS }}{{ else }}{{ with .Params.abstract }}{{ . | jsonify | safeJS }}{{ else }}""{{ end }}{{ end }},
+  "url": {{ .Permalink | jsonify | safeJS }},
+  "mainEntityOfPage": { "@type": "WebPage", "@id": {{ .Permalink | jsonify | safeJS }} },
+  "isPartOf": { "@id": {{ $siteID | jsonify | safeJS }} },
+  "author": { "@id": {{ $authorID | jsonify | safeJS }}, "@type": {{ $authorType | jsonify | safeJS }}, "name": {{ $authorName | jsonify | safeJS }}, "url": {{ $authorURL | jsonify | safeJS }} },
+  "publisher": { "@id": {{ $authorID | jsonify | safeJS }}, "@type": {{ $authorType | jsonify | safeJS }}, "name": {{ $authorName | jsonify | safeJS }}, "url": {{ $authorURL | jsonify | safeJS }} },
+  "datePublished": {{ .Date.Format "2006-01-02" | jsonify | safeJS }},
+  "dateModified": {{ .Lastmod.Format "2006-01-02" | jsonify | safeJS }}{{ with $ogImage }},
+  "image": {{ . | jsonify | safeJS }}{{ end }}{{ with .Params.tags }},
+  "keywords": {{ delimit . ", " | jsonify | safeJS }}{{ end }}
 }
 </script>
 <script type="application/ld+json">
@@ -121,14 +162,14 @@
     {
       "@type": "ListItem",
       "position": 1,
-      "name": {{ .Site.Title | jsonify }},
-      "item": {{ .Site.BaseURL | jsonify }}
+      "name": {{ .Site.Title | jsonify | safeJS }},
+      "item": {{ .Site.BaseURL | jsonify | safeJS }}
     }{{ if not .IsHome }},
     {
       "@type": "ListItem",
       "position": 2,
-      "name": {{ .Title | jsonify }},
-      "item": {{ .Permalink | jsonify }}
+      "name": {{ .Title | jsonify | safeJS }},
+      "item": {{ .Permalink | jsonify | safeJS }}
     }
     {{ end }}
   ]
@@ -140,7 +181,9 @@
 {{/* ── Analytics Resource Hints ── */}}
 {{ with site.Params.analytics.umami }}
 {{- $host := .src | replaceRE "^https?://([^/]+)/.*" "$1" -}}
+{{- if ne $host .src }}
 <link rel="preconnect" href="https://{{ $host }}" crossorigin>
+{{- end }}
 {{ end }}
 {{ with site.Params.analytics.google }}
 <link rel="preconnect" href="https://www.googletagmanager.com" crossorigin>
@@ -156,6 +199,11 @@
       var s = document.createElement('script');
       s.src = src;
       s.dataset.websiteId = websiteId;
+      {{ if .performance }}s.dataset.performance = 'true';{{ end }}
+      {{ with .hostUrl }}s.dataset.hostUrl = '{{ . }}';{{ end }}
+      {{ if and .domains (not hugo.IsServer) }}s.dataset.domains = '{{ .domains }}';{{ end }}
+      {{ if .doNotTrack }}s.dataset.doNotTrack = 'true';{{ end }}
+      {{ if .excludeHash }}s.dataset.excludeHash = 'true';{{ end }}
       s.async = true;
       s.fetchPriority = 'low';
       document.head.appendChild(s);
@@ -173,6 +221,10 @@
 {{ with site.Params.analytics.google }}
 <script>
   (function() {
+    {{ if not hugo.IsServer }}
+    // 仅统计正式域名，避免 Pages 预览部署 / 本地调试污染数据（对齐 umami 的 domains 限制）
+    if (location.hostname !== '{{ (urls.Parse site.BaseURL).Host }}') return;
+    {{ end }}
     var measurementId = '{{ .measurementId }}';
     // Initialize dataLayer and gtag queue immediately so commands are never lost
     window.dataLayer = window.dataLayer || [];
@@ -180,7 +232,12 @@
     window.gtag = gtag;
     window.gaMeasurementId = measurementId;
     gtag('js', new Date());
-    gtag('config', measurementId);
+    // send_page_view:false — page_view 统一由本文件（首次进入）与 pjax.js（SPA 切页）
+    // 手动上报，避免和 GA4 Enhanced Measurement 的「基于浏览器历史记录事件的网页更改」
+    // 自动上报重复计数。启用 GA 时记得去 GA4 后台 Admin → 数据流 → Enhanced measurement
+    // 关闭该选项，否则 pjax 切页会被 GA 自己的 history 监听再报一次。
+    gtag('config', measurementId, { send_page_view: false });
+    gtag('event', 'page_view', { page_location: location.href, page_title: document.title });
     // Defer only the heavy script download
     function loadScript() {
       var s = document.createElement('script');
