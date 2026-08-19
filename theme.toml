@@ -8,5 +8,5 @@ features    = ["blog", "dark-mode", "i18n", "responsive", "syntax-highlighting",
 min_version = "0.128.0"
 
 [author]
-  name     = "Zopiya"
-  homepage = "https://wenxin.blog"
+  name     = "仲平 (Zopiya)"
+  homepage = "https://zopiya.com"

@@ -7,7 +7,7 @@
 {{ end }}
 
 {{ define "main" }}
-<main class="content-stream" id="main-content">
+<main class="content-stream" id="main-content" tabindex="-1">
   {{ $allPages := where .Site.RegularPages "Section" "post" | first 100 }}
   {{ $years := slice }}
   {{ range $allPages }}

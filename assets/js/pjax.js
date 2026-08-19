@@ -1,6 +1,9 @@
 (function () {
   'use strict';
 
+  // PJAX is disabled on mobile (≤768px) — full page loads there instead.
+  if (window.matchMedia('(max-width: 768px)').matches) return;
+
   if ('scrollRestoration' in history) {
     history.scrollRestoration = 'manual';
   }

@@ -85,22 +85,8 @@ enableRobotsTXT = true
 [taxonomies]
   tag = "tags"
 
-[outputFormats]
-  [outputFormats.RSS]
-    mediaType = "application/rss+xml"
-    baseName = "rss"
-    noUgly = true
-  [outputFormats.RSSIndex]
-    mediaType = "application/rss+xml"
-    baseName = "index"
-    noUgly = true
-  [outputFormats.Feed]
-    mediaType = "application/rss+xml"
-    baseName = "feed"
-    noUgly = true
-
 [outputs]
-  home = ["HTML", "RSS", "RSSIndex", "Feed", "WebAppManifest"]
+  home = ["HTML", "RSS", "WebAppManifest"]
   section = ["HTML"]
 
 [markup]

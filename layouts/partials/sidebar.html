@@ -22,17 +22,18 @@
   {{ end }}
 </nav>
 
-{{ with .Site.Params.social }}
 <address class="sidebar-footer">
-  {{ range . }}
+  {{ range .Site.Params.social }}
   <a href="{{ .url }}" class="social-icon" aria-label="{{ .label }}"
-     {{- with .rel }} rel="{{ . }}"{{ end }}
-     {{- if not (hasPrefix .url "mailto:") }} target="_blank"{{ end }}>
+     {{- if not (hasPrefix .url "mailto:") }} target="_blank" rel="{{ .rel | default "noopener noreferrer" }}"
+     {{- else }}{{ with .rel }} rel="{{ . }}"{{ end }}
+     {{- end }}>
     <span class="ph {{ .icon }}" aria-hidden="true"></span>
   </a>
   {{ end }}
-  <a href="{{ "index.xml" | relURL }}" class="social-icon" aria-label="{{ i18n "subscribeRSS" }}">
+  {{ with .Site.Home.OutputFormats.Get "rss" }}
+  <a href="{{ .Permalink }}" class="social-icon" aria-label="{{ i18n "subscribeRSS" }}">
     <span class="ph ph-rss-simple" aria-hidden="true"></span>
   </a>
+  {{ end }}
 </address>
-{{ end }}

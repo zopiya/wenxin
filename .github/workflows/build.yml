@@ -1,0 +1,45 @@
+name: Build
+
+"on":
+  push:
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout theme
+        uses: actions/checkout@v4
+
+      - name: Setup Hugo
+        uses: peaceiris/actions-hugo@v3
+        with:
+          hugo-version: "0.128.0" # matches theme.toml's min_version
+          extended: true
+
+      - name: Link theme into exampleSite
+        run: |
+          mkdir -p exampleSite/themes
+          ln -s "$GITHUB_WORKSPACE" exampleSite/themes/wenxin
+
+      - name: Build exampleSite
+        working-directory: exampleSite
+        run: hugo --printPathWarnings --gc --minify
+
+      - name: Regression checks
+        working-directory: exampleSite
+        run: |
+          set -e
+
+          # RSS output actually exists, and <head>'s discovery link resolves
+          # to a real file instead of a hardcoded path that may not exist
+          # under a site's own hugo.toml (see CHANGELOG "Fixed").
+          test -f public/index.xml
+          grep -q 'application/rss+xml' public/index.html
+
+          # render-heading.html must not re-emit `id` a second time from
+          # .Attributes (regresses to invalid <h2 id="x" id="x">).
+          if grep -RlE '<h[1-6][^>]*\bid="[^"]*"[^>]*\bid="' public; then
+            echo "::error::duplicate id attribute found on a heading"
+            exit 1
+          fi

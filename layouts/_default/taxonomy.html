@@ -7,7 +7,7 @@
 {{ end }}
 
 {{ define "main" }}
-<main class="archive-wrapper" id="main-content">
+<main class="archive-wrapper" id="main-content" tabindex="-1">
 
   <ul class="taxonomy-cloud">
     <li><a href="{{ "archive/" | relURL }}" class="taxonomy-tag{{ if eq $.RelPermalink (printf "%sarchive/" site.BaseURL) }} active{{ end }}">{{ i18n "allPosts" }}</a></li>

@@ -35,11 +35,13 @@ tags: ["功能", "示例"]
 ![图片描述](image.jpg)
 ```
 
-当图片有标题时，会自动渲染为 `<figure>` + `<figcaption>`：
+当图片有标题时，会自动渲染为 `<figure>` + `<figcaption>`，例如：
 
-```markdown
-![图片描述](image.jpg "这是图片标题")
-```
+![文心主题分享图](/og-image.png "文心主题的默认分享图")
+
+## 链接
+
+正文中的链接由主题统一处理：外部链接（如 [Hugo 官网](https://gohugo.io)）会自动打开新标签页并附加安全属性，站内链接则保持当前标签页跳转。
 
 ## Pull Quote
 

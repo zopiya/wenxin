@@ -7,7 +7,7 @@
 {{ end }}
 
 {{ define "main" }}
-<main class="archive-wrapper" id="main-content">
+<main class="archive-wrapper" id="main-content" tabindex="-1">
   <ul class="taxonomy-cloud">
     {{ range .Data.Terms.ByCount }}
       <li><a href="{{ .Page.RelPermalink }}" class="taxonomy-tag">{{ .Page.Title }} ({{ .Count }})</a></li>

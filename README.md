@@ -24,7 +24,7 @@
 - **平滑滚动** — Lenis（桌面端）
 - **PJAX 导航** — 页面切换无刷新
 - **SEO 完整** — Open Graph、Twitter Card、JSON-LD、sitemap、robots.txt
-- **多格式 RSS** — RSS 2.0 + Atom + Feed
+- **RSS 订阅** — RSS 2.0，`<head>` 自动带发现链接
 
 ## 安装
 
@@ -64,6 +64,7 @@ hasCJKLanguage = true
   bio         = "你的个人简介"
   description = "站点描述（用于 SEO）"
   readTime    = true
+  # email     = "you@example.com" # 可选，用于 RSS 的 managingEditor / author 字段
 
   [params.schema]
     # JSON-LD 的作者 / 发布者信息；不填则回退到 author 与 baseURL。
@@ -112,7 +113,7 @@ hasCJKLanguage = true
   label = "发送邮件"
 ```
 
-RSS 订阅按钮固定显示，无需手动配置。
+RSS 订阅按钮位于侧边栏，固定显示、无需手动配置；受限于当前布局，仅在桌面宽屏（>1024px）下可见。
 
 ### 导航菜单
 
@@ -158,7 +159,7 @@ RSS 订阅按钮固定显示，无需手动配置。
   home = ["HTML", "RSS", "WebAppManifest"]
 ```
 
-`params.pwa` 可选配置短名称、颜色、显示模式和图标；`params.brand` 可配置页面 favicon 与 Apple 图标。未启用动态 manifest 时，主题仍提供中性名称为 Wenxin 的静态 manifest 作为回退。
+`params.pwa` 可选配置短名称、颜色、显示模式和图标；`params.brand` 可配置页面 favicon 与 Apple 图标。未启用动态 manifest 时，主题仍提供中性名称为 Wenxin 的静态 manifest（`static/site.webmanifest`）作为回退；启用动态 manifest 后该静态文件不再被引用，可按需删除。
 
 ### 代码高亮
 
@@ -267,4 +268,4 @@ PJAX 在移动端（≤768px）自动禁用，使用完整页面加载。
 
 ## 许可
 
-MIT © [Zopiya](https://blog.zopiya.com)
+MIT © [仲平 (Zopiya)](https://zopiya.com)

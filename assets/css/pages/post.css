@@ -199,6 +199,17 @@
 }
 .article-content blockquote p:last-child { margin-bottom: 0; }
 
+/* Nested quotes recede instead of stacking the same accent + tint twice:
+   neutral border, no fill of their own (the ancestor's tint already reads
+   as the quoted block), tighter top margin to sit close to the line above
+   it inside the same quote. */
+.article-content blockquote blockquote {
+  border-left-color: var(--color-border-strong);
+  background: transparent;
+  margin: var(--space-4) 0 0;
+  padding: var(--space-1) var(--space-5);
+}
+
 .article-content ul,
 .article-content ol {
   margin-bottom: var(--space-5);
@@ -222,7 +233,11 @@
   content: "";
   position: absolute;
   left: 0;
-  top: 0.86em;
+  /* Vertically centered against the line box, not eyeballed: matches
+     where the browser's own `vertical-align: middle` would place a same-
+     size inline box against this text (verified against li font-size,
+     independent of the marker's own size). */
+  top: 0.769em;
   width: 6px;
   height: 6px;
   background-color: var(--color-accent);
@@ -250,7 +265,14 @@
   content: counter(article-ol, decimal-leading-zero) ".";
   position: absolute;
   left: 0;
-  top: 0.14em;
+  /* line-height: 1 makes this pseudo's own box exactly font-size tall, so
+     top can be solved for a precise center instead of guessed: verified
+     against the browser's own `vertical-align: middle` placement for this
+     li, then re-solved for this box's own (smaller, tighter) height. Holds
+     across font-size contexts (base list, nested list, the smaller
+     .footnotes list) since everything here is in em. */
+  top: 0.59em;
+  line-height: 1;
   font-family: var(--font-mono);
   font-size: 0.85em;
   color: var(--color-text-secondary);
@@ -269,6 +291,66 @@
 .article-content ol ol,
 .article-content ol ul {
   margin-top: var(--space-2);
+}
+
+/* Task list items: the checkbox itself is the marker, so the ::before dot
+   is dropped and a custom-drawn box sits in the same gutter the dot used
+   to occupy — same left/top positioning system as the ul dot above, not
+   the native OS checkbox widget, so it lines up with the rest of the list
+   family instead of varying by browser/platform. Falls back to dot+native
+   checkbox together on browsers without :has() support — a soft
+   degradation, not a broken layout. */
+.article-content li:has(> input[type="checkbox"])::before {
+  content: none;
+}
+.article-content input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  /* Form controls don't inherit font-size from their container by default
+     (browser UA stylesheet gives <input> its own base size) — without
+     this, `top` below resolves against that unrelated size instead of the
+     li's, throwing the vertical centering off. */
+  font-size: inherit;
+  position: absolute;
+  left: 0;
+  top: 0.575em;
+  width: 13px;
+  height: 13px;
+  margin: 0;
+  border: 1.5px solid var(--color-border-strong);
+  border-radius: 3px;
+  background: var(--color-bg-pure);
+}
+.article-content input[type="checkbox"]:checked {
+  border-color: var(--color-accent);
+  background: var(--color-accent);
+}
+.article-content input[type="checkbox"]:checked::after {
+  content: "";
+  position: absolute;
+  left: 3.5px;
+  top: 0.5px;
+  width: 4px;
+  height: 7px;
+  border: solid var(--color-bg-pure);
+  border-width: 0 1.5px 1.5px 0;
+  transform: rotate(45deg);
+}
+
+/* Definition lists (dl/dt/dd) */
+.article-content dl {
+  margin: var(--space-6) 0;
+}
+.article-content dt {
+  font-family: var(--font-ui);
+  font-weight: 600;
+  color: var(--color-text-heading);
+}
+.article-content dd {
+  margin: var(--space-1) 0 var(--space-4) 0;
+  padding-left: var(--space-4);
+  border-left: 1px solid var(--color-border-subtle);
+  color: var(--color-text-secondary);
 }
 
 .article-content code {
@@ -400,6 +482,40 @@
 .article-content a:hover {
   color: var(--color-accent);
   text-decoration-color: var(--color-accent);
+}
+
+/* ── Footnotes ── */
+.article-content .footnote-ref {
+  color: var(--color-accent);
+  text-decoration: none;
+}
+.article-content .footnote-ref:hover { text-decoration: underline; }
+
+.article-content .footnotes {
+  margin-top: var(--space-16);
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+}
+.article-content .footnotes ol { margin-bottom: 0; }
+.article-content .footnote-backref {
+  margin-left: var(--space-1);
+  color: var(--color-text-muted);
+  text-decoration: none;
+}
+.article-content .footnote-backref:hover { color: var(--color-accent); }
+
+/* Anchor targets (heading anchors, footnotes) land with a little headroom
+   instead of flush against the viewport edge, and briefly highlight so a
+   jump — in either direction — is visually easy to follow. */
+.article-content [id] {
+  scroll-margin-top: var(--space-8);
+}
+.article-content .footnotes li:target {
+  animation: footnoteTargetFade 2s ease-out;
+}
+@keyframes footnoteTargetFade {
+  from { background-color: var(--color-accent-subtle); }
+  to   { background-color: transparent; }
 }
 
 .pull-quote {

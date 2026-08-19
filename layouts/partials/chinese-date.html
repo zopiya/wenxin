@@ -1,23 +1,40 @@
-{{- /* 中文农历日期格式化
+{{- /* 中文农历日期格式化（非中文站点语言时回退为标准公历日期）
      用法：
        仅月日：{{ partial "chinese-date.html" .Date }}
-       含年份：{{ partial "chinese-date.html" (dict "date" .Date "year" true) }}
-     输出：
+       含年份：{{ partial "chinese-date.html" (dict "date" .Date "year" true "site" .Site) }}
+     输出（中文站点，site.Language.Lang 以 "zh" 开头）：
        仅月日：正月初一
        含年份：乙巳年正月初一
+     输出（非中文站点，需传入 "site" 才能生效）：
+       标准 Gregorian 日期，按 :date_medium / :date_long 本地化格式
 */ -}}
 {{- $date := . -}}
 {{- $showYear := false -}}
+{{- $lang := "zh" -}}
 
 {{- if reflect.IsMap . -}}
   {{- $date = .date -}}
   {{- $showYear = .year | default false -}}
+  {{- with .site -}}
+    {{- $lang = .Language.Lang -}}
+  {{- end -}}
 {{- end -}}
+
+{{- $result := "" -}}
+
+{{- /* Lunar (天干地支) formatting is a Chinese-locale feature; non-Chinese
+     site languages fall back to a standard, i18n-aware Gregorian date so
+     the theme stays usable for non-Chinese content. */ -}}
+{{- if not (strings.HasPrefix $lang "zh") -}}
+  {{- if $showYear -}}
+    {{- $result = $date | time.Format ":date_long" -}}
+  {{- else -}}
+    {{- $result = $date | time.Format ":date_medium" -}}
+  {{- end -}}
+{{- else -}}
 
 {{- $dateStr := $date.Format "20060102" -}}
 {{- $entry := index hugo.Data.chinese_date.calendar $dateStr -}}
-
-{{- $result := "" -}}
 
 {{- if $entry -}}
   {{- $lunarYear := int (index $entry 0) -}}
@@ -62,6 +79,8 @@
     {{- $dayPart = "三十一日" -}}
   {{- end -}}
   {{- $result = printf "%s%s" $monthPart $dayPart -}}
+{{- end -}}
+
 {{- end -}}
 
 {{- $result -}}

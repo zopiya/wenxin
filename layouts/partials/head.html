@@ -1,10 +1,10 @@
 {{/* ── Meta & description ── */}}
-<meta name="description" content="{{ with .Description }}{{ . }}{{ else }}{{ with .Params.abstract }}{{ . }}{{ else }}{{ .Site.Params.description | default .Site.Title }}{{ end }}{{ end }}">
+<meta name="description" content="{{ with .Description }}{{ . }}{{ else }}{{ with .Params.abstract }}{{ . }}{{ else }}{{ with .Summary }}{{ . | plainify | truncate 160 }}{{ else }}{{ .Site.Params.description | default .Site.Title }}{{ end }}{{ end }}{{ end }}">
 
 {{/* ── Open Graph ── */}}
 <meta property="og:type" content="{{ if .IsPage }}article{{ else }}website{{ end }}">
 <meta property="og:title" content="{{ .Title | default .Site.Title }}">
-<meta property="og:description" content="{{ with .Description }}{{ . }}{{ else }}{{ with .Params.abstract }}{{ . }}{{ else }}{{ .Site.Params.description | default "" }}{{ end }}{{ end }}">
+<meta property="og:description" content="{{ with .Description }}{{ . }}{{ else }}{{ with .Params.abstract }}{{ . }}{{ else }}{{ with .Summary }}{{ . | plainify | truncate 160 }}{{ else }}{{ .Site.Params.description | default "" }}{{ end }}{{ end }}{{ end }}">
 <meta property="og:site_name" content="{{ .Site.Title }}">
 <meta property="og:url" content="{{ .Permalink }}">
 <meta property="og:locale" content="{{ replace (.Site.Language.Locale | default "zh-CN") "-" "_" }}">
@@ -22,7 +22,7 @@
 {{/* ── Twitter Card ── */}}
 <meta name="twitter:card" content="{{ if $ogImage }}summary_large_image{{ else }}summary{{ end }}">
 <meta name="twitter:title" content="{{ .Title | default .Site.Title }}">
-<meta name="twitter:description" content="{{ with .Description }}{{ . }}{{ else }}{{ with .Params.abstract }}{{ . }}{{ else }}{{ .Site.Params.description | default "" }}{{ end }}{{ end }}">
+<meta name="twitter:description" content="{{ with .Description }}{{ . }}{{ else }}{{ with .Params.abstract }}{{ . }}{{ else }}{{ with .Summary }}{{ . | plainify | truncate 160 }}{{ else }}{{ .Site.Params.description | default "" }}{{ end }}{{ end }}{{ end }}">
 {{ with $ogImage }}<meta name="twitter:image" content="{{ . }}">
 <meta name="twitter:image:alt" content="{{ $.Title | default $.Site.Title }}">{{ end }}
 {{ with .Site.Params.twitter_username }}<meta name="twitter:creator" content="@{{ . }}">{{ end }}
@@ -39,7 +39,9 @@
 {{/* ── Canonical & feeds ── */}}
 <link rel="canonical" href="{{ .Permalink }}">
 {{ with .Site.Params.schema.authorURL }}<link rel="author" href="{{ . }}">{{ end }}
-<link rel="alternate" type="application/rss+xml" title="{{ .Site.Title }} RSS" href="{{ "rss.xml" | relURL }}">
+{{ with .Site.Home.OutputFormats.Get "rss" }}
+<link rel="alternate" type="application/rss+xml" title="{{ $.Site.Title }} RSS" href="{{ .Permalink }}">
+{{ end }}
 
 {{/* ── Browser compatibility check (inline, no dependency) ── */}}
 {{ with resources.Get "js/browser-check.js" }}
@@ -142,7 +144,7 @@
   "@type": "BlogPosting",
   "@id": {{ .Permalink | jsonify | safeJS }},
   "headline": {{ .Title | jsonify | safeJS }},
-  "description": {{ with .Description }}{{ . | jsonify | safeJS }}{{ else }}{{ with .Params.abstract }}{{ . | jsonify | safeJS }}{{ else }}""{{ end }}{{ end }},
+  "description": {{ with .Description }}{{ . | jsonify | safeJS }}{{ else }}{{ with .Params.abstract }}{{ . | jsonify | safeJS }}{{ else }}{{ with .Summary }}{{ . | plainify | truncate 160 | jsonify | safeJS }}{{ else }}""{{ end }}{{ end }}{{ end }},
   "url": {{ .Permalink | jsonify | safeJS }},
   "mainEntityOfPage": { "@type": "WebPage", "@id": {{ .Permalink | jsonify | safeJS }} },
   "isPartOf": { "@id": {{ $siteID | jsonify | safeJS }} },

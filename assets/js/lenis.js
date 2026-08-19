@@ -26,8 +26,55 @@
       resizeObserver.observe(document.body);
     }
 
+    // Once Lenis owns scroll, it re-asserts its own tracked position every
+    // raf tick — so a native same-page #hash jump (footnote refs, heading
+    // permalinks, the skip link) gets silently overridden a frame after it
+    // happens, because Lenis never learns the scroll moved. Route those
+    // clicks through lenis.scrollTo() instead so it stays in sync.
+    // -32 offset ≈ --space-8, giving the target a little headroom instead
+    // of landing flush against the viewport edge.
+    function scrollToHash(hash) {
+      if (!hash || hash === '#') return;
+      var target;
+      try { target = document.getElementById(decodeURIComponent(hash.slice(1))); } catch (_) { return; }
+      if (!target) return;
+      // Lenis resyncs its own tracked scroll position from the native
+      // `scroll` event, but that event is async — if something moved the
+      // page natively just before this click (keyboard paging, a
+      // scrollbar drag, scroll restoration) and hasn't been processed
+      // yet, Lenis would compute this scrollTo's target from a stale
+      // remembered position. Force the resync synchronously first.
+      lenis.scrollTo(window.scrollY, { immediate: true });
+      lenis.scrollTo(target, { offset: -32 });
+      // Preserve native anchor-jump behavior: move focus to the target so
+      // keyboard/AT users continue from there (e.g. the skip link into
+      // <main tabindex="-1">). preventScroll avoids the browser's own
+      // focus-triggered scroll fighting the Lenis animation above; targets
+      // without tabindex (headings, footnote items) simply ignore focus().
+      target.focus({ preventScroll: true });
+    }
+
+    function onHashLinkClick(e) {
+      var a = e.target.closest('a[href*="#"]');
+      if (!a) return;
+      var url;
+      try { url = new URL(a.href, location.href); } catch (_) { return; }
+      if (url.pathname !== location.pathname || !url.hash) return;
+      e.preventDefault();
+      if (url.hash !== location.hash) history.pushState(null, '', url.hash);
+      scrollToHash(url.hash);
+    }
+    document.addEventListener('click', onHashLinkClick);
+
+    // Land on the right spot when a page is loaded with a hash already in
+    // the URL (e.g. a shared link straight to a footnote).
+    if (location.hash) {
+      requestAnimationFrame(function () { scrollToHash(location.hash); });
+    }
+
     window.lenis = lenis;
     window._lenisCleanup = function () {
+      document.removeEventListener('click', onHashLinkClick);
       if (resizeObserver) resizeObserver.disconnect();
       lenis.destroy();
     };
