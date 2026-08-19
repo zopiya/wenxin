@@ -10,7 +10,7 @@
 <main class="archive-wrapper" id="main-content">
 
   <ul class="taxonomy-cloud">
-    <li><a href="{{ "archive/" | relURL }}" class="taxonomy-tag">{{ i18n "allPosts" }}</a></li>
+    <li><a href="{{ "archive/" | relURL }}" class="taxonomy-tag{{ if eq $.RelPermalink (printf "%sarchive/" site.BaseURL) }} active{{ end }}">{{ i18n "allPosts" }}</a></li>
     {{ range .Site.Taxonomies.tags.ByCount }}
       <li><a href="{{ .Page.RelPermalink }}" class="taxonomy-tag{{ if eq $.RelPermalink .Page.RelPermalink }} active{{ end }}">{{ .Page.Title }}</a></li>
     {{ end }}

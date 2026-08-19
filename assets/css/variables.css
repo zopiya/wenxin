@@ -39,7 +39,7 @@
   --text-xs:   0.694rem;
   --text-sm:   0.833rem;
   --text-base: 1rem;
-  --text-md:   1.0625rem;
+  --text-md:   1.125rem;
   --text-lg:   1.25rem;
   --text-xl:   1.5rem;
   --text-2xl:  1.875rem;
@@ -64,7 +64,7 @@
   --space-8:  32px; --space-10: 40px; --space-12: 48px;
   --space-16: 64px; --space-24: 96px; --space-32: 128px;
 
-  --width-article:  clamp(520px, 55vw, 640px);
+  --width-article:  clamp(580px, 62vw, 720px);
   --width-content:  clamp(620px, 65vw, 760px);
   --width-showcase: clamp(700px, 72vw, 920px);
   --padding-page-x: clamp(20px, 5vw, 72px);

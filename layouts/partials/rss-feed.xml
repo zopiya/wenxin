@@ -17,7 +17,7 @@
     <link>{{ .Site.BaseURL }}</link>
     <description>{{ .Site.Params.description | default "" }}</description>
     <generator>Hugo</generator>
-    <language>{{ site.Language.LanguageCode }}</language>
+    <language>{{ site.Language.Locale }}</language>
     <ttl>10080</ttl>
     {{- with $authorEmail }}
     <managingEditor>{{ . }}{{ with $authorName }} ({{ . }}){{ end }}</managingEditor>

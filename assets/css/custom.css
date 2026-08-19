@@ -1,0 +1,32 @@
+/* ──────────────────────────────────────────────
+ * Custom Stylesheet — Wenxin Theme
+ * ──────────────────────────────────────────────
+ *
+ * This file is loaded as the last item in the base CSS bundle.
+ * Styles here can override any theme default.
+ *
+ * Available CSS Custom Properties (defined in variables.css):
+ *
+ *   Colors:
+ *     --color-accent          — primary accent color
+ *     --color-accent-hover    — accent on hover
+ *     --color-accent-subtle   — subtle accent background
+ *     --color-bg-base         — page background
+ *     --color-bg-warm         — warm background (home, about)
+ *     --color-text-base       — primary text
+ *     --color-text-muted      — secondary text
+ *     --color-border          — border / divider
+ *
+ *   Typography:
+ *     --font-display          — heading font (Lora)
+ *     --font-body             — body font (EB Garamond)
+ *     --font-mono             — monospace font (JetBrains Mono)
+ *     --font-ui               — UI font (system-ui)
+ *
+ *   Layout:
+ *     --width-article         — article content width
+ *     --width-content         — general content width
+ *     --width-showcase        — showcase / about page width
+ *
+ * Dark mode is automatic via prefers-color-scheme — no toggle needed.
+ * ────────────────────────────────────────────── */
