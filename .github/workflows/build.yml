@@ -14,13 +14,13 @@ jobs:
       - name: Setup Hugo
         uses: peaceiris/actions-hugo@v3
         with:
-          hugo-version: "0.128.0" # matches theme.toml's min_version
+          hugo-version: "0.164.0" # matches theme.toml's min_version
           extended: true
 
       - name: Link theme into exampleSite
         run: |
           mkdir -p exampleSite/themes
-          ln -s "$GITHUB_WORKSPACE" exampleSite/themes/wenxin
+          ln -sfn "$GITHUB_WORKSPACE" exampleSite/themes/wenxin
 
       - name: Build exampleSite
         working-directory: exampleSite

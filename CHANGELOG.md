@@ -9,6 +9,7 @@ All notable changes to the Wenxin Hugo Theme will be documented in this file.
 - 新增可配置的 Web App Manifest 输出，PWA 名称与颜色从站点配置读取。
 - 默认分享图改为中性的 Wenxin 主题图。
 - RSS 输出收敛为单一格式，不再需要自定义 `outputFormats` 才能让 `<head>` 的 RSS 发现链接生效。
+- README 拆分为面向新用户的快速开始（README.md）和完整配置参考（USAGE.md）。
 
 ### Fixed
 - 修复 `<head>` 中 RSS 自动发现链接在未自定义 `outputFormats` 时指向不存在文件的问题。

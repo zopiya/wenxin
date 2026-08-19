@@ -4,3 +4,8 @@ public/
 .DS_Store
 .memdb
 AGENTS.md
+
+# Local convenience symlink for running exampleSite against the working
+# tree (e.g. `cd exampleSite && ln -s .. themes/wenxin`) — machine-specific,
+# never commit it. CI creates its own inside the workflow instead.
+exampleSite/themes/
